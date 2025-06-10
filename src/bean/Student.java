@@ -1,5 +1,7 @@
 package bean;
 
-public class Student {
+import java.io.Serializable;
+
+public class Student extends School implements Serializable {
 
 }
