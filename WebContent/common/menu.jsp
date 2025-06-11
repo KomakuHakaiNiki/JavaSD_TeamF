@@ -16,7 +16,7 @@
 
 <nav style="width:180px; padding:30px 0 0 20px;">
     <a href="<%=request.getContextPath()%>/student/list" style="display:block; margin-bottom:15px; color:#2366b1; text-decoration:underline;">学生管理</a>
-    <a href="<%=request.getContextPath()%>/grade/menu" style="display:block; margin-bottom:15px; color:#2366b1; text-decoration:underline;">成績管理</a>
+    <li>成績管理</li>
     <a href="<%=request.getContextPath()%>/grade/create" style="display:block; margin-bottom:15px; color:#2366b1; text-decoration:underline;">成績登録</a>
     <a href="<%=request.getContextPath()%>/grade/view" style="display:block; margin-bottom:15px; color:#2366b1; text-decoration:underline;">成績参照</a>
     <a href="<%=request.getContextPath()%>/subject/list" style="display:block; margin-bottom:15px; color:#2366b1; text-decoration:underline;">科目管理</a>
