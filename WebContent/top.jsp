@@ -118,7 +118,7 @@
         <!-- 左サイドメニュー -->
         <nav class="sidebar">
             <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
-            <a href="<%=request.getContextPath()%>/grade/menu">成績管理</a>
+            <li>成績管理</li>
             <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
             <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
             <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
