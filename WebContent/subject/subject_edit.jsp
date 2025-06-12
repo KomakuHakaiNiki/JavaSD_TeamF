@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@include file="../common/menu.jsp" %>  
+<%@include file="../common/menu.jsp" %>
 <%-- ★includeすると下の変更ボタン、戻るボタンが見えなくなってしまうので、menu.jspの修正待ちです。★ --%>
 
 <style>
@@ -17,11 +17,11 @@
 
 .form-input {
     width: 100%;
-    box-sizing: border-box; 
-    padding: 8px; 
+    box-sizing: border-box;
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px; 
-   
+    border-radius: 4px;
+
 }
 </style>
 <h2 style="background-color: #ededed;">　科目情報変更</h2>
