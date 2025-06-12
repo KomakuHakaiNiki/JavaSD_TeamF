@@ -1,9 +1,4 @@
-<!-- ログインjsp 作成：タカハシ -->
-
-
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="/common/menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -82,21 +77,17 @@
 <div class="main-box">
     <div class="main-title">ログイン</div>
     <form action="<%= request.getContextPath() %>/login" method="post">
-        <!-- ID -->
         <label class="form-label" for="userId">ＩＤ</label>
         <input type="text" id="userId" name="userId" class="form-input" placeholder="ユーザーIDを入力" value="${param.userId != null ? param.userId : ''}" />
 
-        <!-- パスワード -->
         <label class="form-label" for="password">パスワード</label>
         <input type="password" id="password" name="password" class="form-input" placeholder="パスワードを入力" />
 
-        <!-- パスワード表示チェック -->
         <div class="form-checkbox">
             <input type="checkbox" id="showPassword" onclick="togglePassword()" />
             <label for="showPassword">パスワードを表示</label>
         </div>
 
-        <!-- ログインボタン -->
         <button type="submit" class="form-btn">ログイン</button>
     </form>
 </div>
