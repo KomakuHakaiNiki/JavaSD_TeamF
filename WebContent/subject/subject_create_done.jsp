@@ -2,7 +2,7 @@
 <%@include file="../common/menu.jsp" %>
 
 <h2 style="background-color: #ededed;">　科目情報登録</h2>
-<p style="background-color: #46BD7B; text-align: center;">登録が完了しました</p>
+<p style="background-color: #a5d6a7; text-align: center;">登録が完了しました</p>
 <p>　<p>
 <p>　<p>
 <div style="display: flex; gap: 80px; margin-top: 20px;">
