@@ -30,7 +30,7 @@
         flex-grow: 1;
         padding: 50px 20px;
     }
-    
+
     .content-wrapper {
         max-width: 900px;
         margin: 0 auto;
@@ -47,7 +47,7 @@
     }
 
     /* --- ログアウトコンテンツ関連のスタイル --- */
-    
+
     .title-bar {
         background-color: #f8f9fa;
         padding: 15px 25px;
@@ -99,12 +99,12 @@
             <div class="title-bar">
                 ログアウト
             </div>
-    
+
             <!-- ② メッセージボックス -->
             <div class="message-box">
                 ログアウトしました
             </div>
-    
+
             <!-- ③ ログインへのリンク -->
             <div class="login-link">
                 <a href="login.jsp">ログイン</a>
@@ -114,7 +114,7 @@
 
     <!-- フッター -->
     <footer>
-        © 2023 TIC<br>
+        © 2025 TIC<br>
          大原学園
     </footer>
 

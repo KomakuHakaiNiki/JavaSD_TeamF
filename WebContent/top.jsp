@@ -144,7 +144,7 @@
         </main>
     </div>
     <footer class="footer">
-        © 2023 TIC<br>大原学園
+        © 2025 TIC<br>大原学園
     </footer>
 </body>
 </html>

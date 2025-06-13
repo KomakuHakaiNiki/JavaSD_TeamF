@@ -30,7 +30,7 @@
 		main {
     		padding: 24px;
 		}
-        
+
         main p {
             font-size: 1rem;
             margin-left: 110px;
@@ -42,10 +42,10 @@
             padding: 20px 24px;
             border-top: 1px solid #dee2e6;
             text-align: center;
-            color: #6c757d; 
+            color: #6c757d;
             font-size: 0.9rem;
         }
-        
+
         footer p {
             margin: 0;
             line-height: 1.5;
@@ -63,7 +63,7 @@
     </main>
 
     <footer>
-        <p>© 2023 TIC</p>
+        <p>© 2025 TIC</p>
         <p>大原学園</p>
     </footer>
 
