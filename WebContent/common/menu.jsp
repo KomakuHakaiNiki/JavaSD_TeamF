@@ -5,6 +5,10 @@
     if (userName == null) userName = "大原 太郎様"; // ダミー
 %>
 <style>
+.layout-flex {
+    display: flex;
+    min-height: 100vh;
+}
 .menu-header {
     background: #e6eef7;
     padding: 10px 24px;
@@ -25,22 +29,33 @@
     text-decoration: underline;
     margin-left: 10px;
 }
-.menu-nav {
+.menu-sidebar {
     width: 180px;
     padding: 30px 0 0 20px;
+    border-right: 1.5px solid #d3d5de;   /* 縦線追加 */
+    min-height: 80vh;
+    box-sizing: border-box;
+}
+.menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.menu-nav-title {
+    font-weight: bold;
+    color: #376345;
+    font-size: 1.05em;
+    margin-bottom: 5px;
+    padding-top: 6px;
+    padding-left: 2px;
+    /* リストマーク非表示 */
+    list-style: none;
 }
 .menu-nav a {
-    display: block;
-    margin-bottom: 15px;
     color: #2366b1;
     text-decoration: underline;
     font-size: 1.05em;
-}
-.menu-nav li {
-    list-style: none;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #376345;
+    margin-left: 0;
 }
 .footer {
     background: #ededed;
@@ -65,13 +80,19 @@
     </span>
 </div>
 
-<nav class="menu-nav">
-    <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
-    <li>成績管理</li>
-    <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
-    <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
-    <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
-</nav>
+<div class="layout-flex">
+    <nav class="menu-sidebar">
+        <div class="menu-nav">
+            <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
+            <span class="menu-nav-title">成績管理</span>
+            <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
+            <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
+            <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
+        </div>
+    </nav>
+    <!-- 右側のmain部分はここに入ります（各JSPごとに配置） -->
+    <!-- <main>...</main> -->
+</div>
 
 <footer class="footer">
     © 2023 TIC<br>大原学園
