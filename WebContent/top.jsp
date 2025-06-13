@@ -1,10 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ include file="/common/menu.jsp" %>
 <%@ page session="true" %>
-<%
-    // セッションからユーザー名を取得（仮）
-    String userName = (String) session.getAttribute("userName");
-    if (userName == null) userName = "大原 太郎様"; // ダミー
-%>
+
 <!DOCTYPE html>
 <html>
 <head>
