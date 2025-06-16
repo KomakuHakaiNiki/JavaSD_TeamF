@@ -1,15 +1,51 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="/common/menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>科目情報登録 | 得点管理システム</title>
     <style>
+        body {
+            margin: 0;
+            background: #f7fafd;
+            font-family: "Meiryo", sans-serif;
+        }
+        .layout-flex {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 180px;
+            padding: 30px 0 0 20px;
+            border-right: 1.5px solid #d3d5de;
+            min-height: 80vh;
+            box-sizing: border-box;
+        }
+        .sidebar a {
+            display: block;
+            margin-bottom: 15px;
+            color: #2366b1;
+            text-decoration: underline;
+            font-size: 1.05em;
+        }
+        .sidebar-title {
+            font-weight: bold;
+            color: #376345;
+            font-size: 1.05em;
+            margin-bottom: 5px;
+            padding-top: 6px;
+            padding-left: 2px;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 50px 0;
+        }
         .main-box {
             background: #f7fafd;
-            margin: 40px auto;
             border-radius: 12px;
             box-shadow: 0 4px 18px #c8c8d240;
             max-width: 620px;
@@ -62,35 +98,40 @@
     </style>
 </head>
 <body>
-<div style="margin-left:230px;">
-    <form action="<%=request.getContextPath()%>/subject/create" method="post" class="main-box">
-        <!-- ① タイトル -->
-        <div class="main-title">科目情報登録</div>
-
-        <!-- ② ラベル：科目コード -->
-        <label class="form-label" for="subjectCode">科目コード</label>
-
-        <!-- ③ 入力：科目コード -->
-        <input type="text" name="subjectCode" id="subjectCode" class="form-input"
-               placeholder="科目コードを入力してください"
-               value="${param.subjectCode != null ? param.subjectCode : ''}"/>
-
-        <!-- ④ ラベル：科目名 -->
-        <label class="form-label" for="subjectName">科目名</label>
-
-        <!-- ⑤ 入力：科目名 -->
-        <input type="text" name="subjectName" id="subjectName" class="form-input"
-               placeholder="科目名を入力してください"
-               value="${param.subjectName != null ? param.subjectName : ''}"/>
-
-        <!-- ⑥ 登録ボタン -->
-        <button type="submit" class="form-btn">登録</button>
-
-        <!-- ⑦ 戻るリンク -->
-        <div>
-            <a href="<%=request.getContextPath()%>/subject/list" class="back-link">戻る</a>
-        </div>
-    </form>
-</div>
+    <!-- ヘッダー（ヘッダー部だけmenu.jspからインクルード、またはここで直書きでもOK） -->
+    <div class="header" style="background:#e6eef7; padding:10px 24px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:1.3em; font-weight:bold; color:#2b2e33;">得点管理システム</span>
+        <span>大原 太郎様　
+            <a href="<%=request.getContextPath()%>/logout" style="color:#0a6bce; text-decoration:underline;">ログアウト</a>
+        </span>
+    </div>
+    <div class="layout-flex">
+        <!-- サイドバー -->
+        <nav class="sidebar">
+            <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
+            <div class="sidebar-title">成績管理</div>
+            <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
+            <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
+            <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
+        </nav>
+        <!-- メイン -->
+        <main class="main-content">
+            <form action="<%=request.getContextPath()%>/subject/create" method="post" class="main-box">
+                <div class="main-title">科目情報登録</div>
+                <label class="form-label" for="subjectCode">科目コード</label>
+                <input type="text" name="subjectCode" id="subjectCode" class="form-input"
+                       placeholder="科目コードを入力してください"
+                       value="${param.subjectCode != null ? param.subjectCode : ''}"/>
+                <label class="form-label" for="subjectName">科目名</label>
+                <input type="text" name="subjectName" id="subjectName" class="form-input"
+                       placeholder="科目名を入力してください"
+                       value="${param.subjectName != null ? param.subjectName : ''}"/>
+                <button type="submit" class="form-btn">登録</button>
+                <div>
+                    <a href="<%=request.getContextPath()%>/subject/list" class="back-link">戻る</a>
+                </div>
+            </form>
+        </main>
+    </div>
 </body>
 </html>

@@ -57,4 +57,12 @@
         <a href="<%=request.getContextPath()%>/logout">ログアウト</a>
     </span>
 </div>
-<!-- layout-flexは各JSPで開始＆終了させる -->
+<nav class="menu-sidebar">
+    <div class="menu-nav">
+        <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
+        <span class="menu-nav-title">成績管理</span>
+        <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
+        <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
+        <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
+    </div>
+</nav>
