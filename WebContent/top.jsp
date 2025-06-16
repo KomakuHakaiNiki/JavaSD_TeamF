@@ -130,7 +130,6 @@
     <div class="header">
         <span class="header-title">得点管理システム</span>
         <span class="header-user">
-            大原 太郎様　
             <a href="<%=request.getContextPath()%>/logout">ログアウト</a>
         </span>
     </div>
