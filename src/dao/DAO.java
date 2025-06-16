@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DAO {
     // JDBC接続情報（必要に応じて変更）
-    private static final String URL = "jdbc:h2:tcp://localhost/~/yourDB";
+    private static final String URL = "jdbc:h2:tcp://localhost/~/teamf";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
