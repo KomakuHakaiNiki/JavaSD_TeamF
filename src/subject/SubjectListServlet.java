@@ -2,8 +2,10 @@
 package subject;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,27 +28,36 @@ public class SubjectListServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
 
-        // ログインしていない場合はログインページにリダイレクト
         if (user == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        // ★NullPointerExceptionを回避するため、学校情報がnullでないことを確認
+        if (user.getSchool() == null) {
+            req.setAttribute("error", "ユーザー情報に学校が設定されていません。");
+            req.getRequestDispatcher("/subject/subject_list.jsp").forward(req, resp);
             return;
         }
 
         SubjectDAO dao = new SubjectDAO();
         List<Subject> list = null;
 
+        // ★ try-catchブロックを詳細化
         try {
-            // ログインしている教員の学校コードで科目を絞り込む
             list = dao.filterBySchool(user.getSchool().getCd());
+        } catch (NamingException e) {
+            e.printStackTrace();
+            req.setAttribute("error", "データベースリソースの取得に失敗しました。context.xmlの設定を確認してください。");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            req.setAttribute("error", "データベース処理中にエラーが発生しました。SQL文やテーブル定義を確認してください。");
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "科目一覧の取得中にエラーが発生しました。");
+            req.setAttribute("error", "予期せぬエラーが発生しました。");
         }
 
-        // 取得したリストをリクエストスコープにセット
         req.setAttribute("subjects", list);
-
-        // 科目一覧ページにフォワード
         req.getRequestDispatcher("/subject/subject_list.jsp").forward(req, resp);
     }
 

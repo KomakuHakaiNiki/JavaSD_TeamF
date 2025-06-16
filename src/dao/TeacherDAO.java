@@ -11,10 +11,11 @@ public class TeacherDAO extends DAO {
 
     /**
      * IDとパスワードで認証を行い、教員情報を取得します。
-     * ★修正点: 学校情報(SCHOOL_CD)も取得してセットするように変更
+     * ★★★最重要修正点★★★
+     * ログイン時に学校情報(SCHOOL_CD)も取得してTeacherオブジェクトにセットします。
      * @param id 教員ID
      * @param password パスワード
-     * @return 教員情報 (認証失敗時はnull)
+     * @return 学校情報を含む教員オブジェクト (認証失敗時はnull)
      * @throws Exception
      */
     public Teacher login(String id, String password) throws Exception {
@@ -38,9 +39,9 @@ public class TeacherDAO extends DAO {
                     // --- ここからが重要な修正 ---
                     // Schoolオブジェクトを生成
                     School school = new School();
-                    // データベースから取得した学校コードをセット
+                    // データベースから取得した学校コードをSchoolオブジェクトにセット
                     school.setCd(rs.getString("SCHOOL_CD"));
-                    // TeacherオブジェクトにSchoolオブジェクトをセット
+                    // 完成したSchoolオブジェクトをTeacherオブジェクトにセット
                     teacher.setSchool(school);
                     // --- ここまでが重要な修正 ---
                 }
@@ -50,4 +51,5 @@ public class TeacherDAO extends DAO {
     }
 
     // 他のメソッド (getTeacherById, insertTeacherなど) はこの下に続きます...
+    // これらのメソッドも、必要に応じて学校情報を扱うように修正すると、より堅牢になります。
 }
