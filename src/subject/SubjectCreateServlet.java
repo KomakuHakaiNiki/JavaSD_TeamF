@@ -43,7 +43,7 @@ public class SubjectCreateServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "科目の登録に失敗しました。");
-            req.getRequestDispatcher("/subject/subject_create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/subject/subject_create_done.jsp").forward(req, resp);
             return;
         }
 
