@@ -11,43 +11,58 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Student;
+// import dao.ClassNumDAO; // ★ClassNumDAOのインポートを削除
 import dao.StudentDAO;
 
-/**
-* 学生一覧を表示するためのサーブレットです。
-* データベースから学生の全件リストを取得し、JSPに渡します。
-*/
 @WebServlet("/student/list")
 public class StudentListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // StudentDAOのインスタンスを生成
-        StudentDAO dao = new StudentDAO();
-        List<Student> students = null;
+        // DAOのインスタンス化
+        StudentDAO studentDao = new StudentDAO();
+        // ClassNumDAO classNumDao = new ClassNumDAO(); // ★ClassNumDAOのインスタンス化を削除
 
-        try {
-            // DAOを利用して全学生のリストを取得
-            students = dao.getAllStudents();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // エラーが発生した場合、エラーメッセージを設定してエラーページなどに遷移させる
-            // ここでは簡易的にコンソールに出力し、エラーページにフォワードする例
-            req.setAttribute("error", "学生一覧の取得中にエラーが発生しました。");
-            req.getRequestDispatcher("/error.jsp").forward(req, resp); // エラーページ(error.jsp)が別途必要
-            return;
+        // 絞り込み条件をリクエストから取得
+        String entYearStr = req.getParameter("entYear");
+        String classNum = req.getParameter("classNum");
+
+        int entYear = 0; // 未選択時のデフォルト値
+        if (entYearStr != null && !entYearStr.isEmpty()) {
+            try {
+                entYear = Integer.parseInt(entYearStr);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
 
-        // 取得した学生リストをリクエストスコープに設定
-        req.setAttribute("students", students);
+        try {
+            // 1. 入学年度のリストをDAOから取得 (プルダウン用)
+            List<Integer> entYearList = studentDao.getEntYears();
 
-        // 学生一覧ページ (student_list.jsp) にフォワード
+            // 2. クラス番号のリストをStudentDAOから取得 (プルダウン用) ★ここを修正
+            List<String> classNumList = studentDao.getClassNums();
+
+            // 3. 絞り込み条件に合った学生のリストを取得
+            List<Student> studentList = studentDao.filter(entYear, classNum);
+
+
+            // JSPに渡すためにリクエストスコープにデータをセット
+            req.setAttribute("studentList", studentList);
+            req.setAttribute("entYearList", entYearList);
+            req.setAttribute("classNumList", classNumList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("error", "データの取得中にエラーが発生しました。");
+        }
+
+        // JSPページにフォワード
         req.getRequestDispatcher("/student/student_list.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // POSTリクエストの場合もGETと同じ処理を行う
         doGet(req, resp);
     }
 }

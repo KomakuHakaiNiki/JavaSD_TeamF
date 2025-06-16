@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="/common/menu.jsp" %>
+<%-- <%@ include file="/common/menu.jsp" %> --%> <%-- 共通メニューを使用する場合はこのコメントを解除 --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,6 +71,12 @@
             <span>科目管理</span>
             <a href="<%=request.getContextPath()%>/subject/create" class="btn-right">科目登録</a>
         </div>
+
+        <!-- エラーメッセージ表示 -->
+        <c:if test="${not empty error}">
+            <p style="color:red; padding: 10px 20px;"><c:out value="${error}" /></p>
+        </c:if>
+
         <div class="subject-table-area">
             <table class="subject-table">
                 <thead>
@@ -82,7 +88,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="subject" items="${subjectList}">
+                    <%-- ★修正点: itemsをサーブレット側でセットした"subjects"に修正 --%>
+                    <c:forEach var="subject" items="${subjects}">
                         <tr>
                             <td>${subject.cd}</td>
                             <td>${subject.name}</td>
