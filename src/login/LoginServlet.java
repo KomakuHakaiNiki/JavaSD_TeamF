@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import bean.Teacher;
 import dao.TeacherDAO;
 
-@WebServlet("/login/login")
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     /**
