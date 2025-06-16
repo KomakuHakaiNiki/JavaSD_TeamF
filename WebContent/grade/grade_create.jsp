@@ -91,7 +91,7 @@
 <option value="101">101</option>
 <option value="201">201</option>
 <option value="301">301</option>
-<!-- JSTLでクラスリスト出力に変更もOK -->
+<!-- JSTLでクラスリスト出力に変更もO -->
 </select>
 </div>
 <!-- ⑥ 科目 -->
