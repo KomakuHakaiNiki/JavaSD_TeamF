@@ -9,9 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import bean.Student;
-// import dao.ClassNumDAO; // ★ClassNumDAOのインポートを削除
+import bean.Teacher;
 import dao.StudentDAO;
 
 @WebServlet("/student/list")
@@ -19,15 +20,29 @@ public class StudentListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // DAOのインスタンス化
+        HttpSession session = req.getSession();
+        Teacher user = (Teacher) session.getAttribute("user");
+
+        // ログインチェック
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+        // 学校情報チェック
+        if (user.getSchool() == null || user.getSchool().getCd() == null) {
+            req.setAttribute("error", "セッションにユーザーの学校情報が見つかりません。再ログインしてください。");
+            req.getRequestDispatcher("/student/student_list.jsp").forward(req, resp);
+            return;
+        }
+
         StudentDAO studentDao = new StudentDAO();
-        // ClassNumDAO classNumDao = new ClassNumDAO(); // ★ClassNumDAOのインスタンス化を削除
 
         // 絞り込み条件をリクエストから取得
         String entYearStr = req.getParameter("entYear");
         String classNum = req.getParameter("classNum");
+        String schoolCd = user.getSchool().getCd(); // ★セッションから学校コードを取得
 
-        int entYear = 0; // 未選択時のデフォルト値
+        int entYear = 0;
         if (entYearStr != null && !entYearStr.isEmpty()) {
             try {
                 entYear = Integer.parseInt(entYearStr);
@@ -37,17 +52,15 @@ public class StudentListServlet extends HttpServlet {
         }
 
         try {
-            // 1. 入学年度のリストをDAOから取得 (プルダウン用)
-            List<Integer> entYearList = studentDao.getEntYears();
+            // ★★★★★ ここが修正点 ★★★★★
+            // filterメソッドに3つの引数（入学年度、クラス番号、学校コード）を渡す
+            List<Student> studentList = studentDao.filter(entYear, classNum, schoolCd);
 
-            // 2. クラス番号のリストをStudentDAOから取得 (プルダウン用) ★ここを修正
+            // プルダウン用のリストも取得
+            List<Integer> entYearList = studentDao.getEntYears();
             List<String> classNumList = studentDao.getClassNums();
 
-            // 3. 絞り込み条件に合った学生のリストを取得
-            List<Student> studentList = studentDao.filter(entYear, classNum);
-
-
-            // JSPに渡すためにリクエストスコープにデータをセット
+            // JSPにデータをセット
             req.setAttribute("studentList", studentList);
             req.setAttribute("entYearList", entYearList);
             req.setAttribute("classNumList", classNumList);

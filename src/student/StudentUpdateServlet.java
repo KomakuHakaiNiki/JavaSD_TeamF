@@ -8,18 +8,24 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import bean.Student;
+import bean.Teacher; // Teacherクラスをインポート
 import dao.StudentDAO;
 
 @WebServlet("/student/update")
 public class StudentUpdateServlet extends HttpServlet {
 
-    /**
-     * 学生更新ページを表示します。
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // ログインチェック
+        HttpSession session = req.getSession();
+        if (session.getAttribute("user") == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
         String no = req.getParameter("no");
         StudentDAO dao = new StudentDAO();
         try {
@@ -32,12 +38,17 @@ public class StudentUpdateServlet extends HttpServlet {
         }
     }
 
-    /**
-     * 学生情報の更新処理を実行します。
-     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        HttpSession session = req.getSession();
+        Teacher user = (Teacher) session.getAttribute("user");
+
+        // ログインチェック
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
 
         String no = req.getParameter("no");
         String name = req.getParameter("name");
@@ -51,6 +62,8 @@ public class StudentUpdateServlet extends HttpServlet {
         student.setEntyear(entYear);
         student.setClassNum(classNum);
         student.setAttend(isAttend);
+        // ★★★重要: ログインユーザーの学校情報をセットする
+        student.setSchool(user.getSchool());
 
         StudentDAO dao = new StudentDAO();
         try {
@@ -63,7 +76,7 @@ public class StudentUpdateServlet extends HttpServlet {
             return;
         }
 
-        // 完了後は学生一覧画面にリダイレクト（※StudentListServletが別途必要）
-        resp.sendRedirect(req.getContextPath() + "/student_list.jsp"); // 仮の遷移先
+        // ★完了後はStudentListServletにリダイレクト
+        resp.sendRedirect(req.getContextPath() + "/student/list");
     }
 }
