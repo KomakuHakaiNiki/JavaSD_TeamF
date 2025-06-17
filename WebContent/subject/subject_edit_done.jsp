@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%-- 
+<%--
   menu.jsp や共通のヘッダーファイルにBootstrapの読み込みがない場合は、
   以下の<head>セクションが必要です。
 --%>
@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<%@include file="../common/menu.jsp" %>
+<%@include file="../menu.jsp" %>
 
 <%-- containerクラスで全体を囲み、左右に適切な余白を設けます --%>
 <div class="container mt-4">
@@ -29,7 +29,7 @@
         <div style="background-color: #a5d6a7;" class="text-center py-2 mb-4">
             変更が完了しました
         </div>
-        
+
         <%-- 空白行: <p>タグで空白行を作成します --%>
         <p>　</p>
         <p>　</p>
@@ -37,7 +37,7 @@
         <%-- リンク: <p>タグで囲み、体裁を整えます --%>
         <p><a href="subject_list.jsp">科目一覧</a></p>
 
-    </div> 
+    </div>
 </div>
 
 

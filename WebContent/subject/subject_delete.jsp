@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ include file="/common/menu.jsp" %>
+<%@ include file="/menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +29,7 @@
                     </p>
                     <!-- 隠しパラメータ（科目コード） -->
                     <input type="hidden" name="cd" value="${subject.cd}" />
-                    
+
                     <!-- 削除ボタン -->
                     <button type="submit" class="btn btn-danger me-3">削除</button>
 
