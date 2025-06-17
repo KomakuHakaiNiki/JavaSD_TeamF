@@ -89,6 +89,6 @@ public class SubjectUpdateServlet extends HttpServlet {
 
         // ★★★ ここからが修正点 ★★★
         // 成功した場合、変更完了ページにフォワードします。
-        req.getRequestDispatcher("/subject/subject_update_done.jsp").forward(req, resp);
+        req.getRequestDispatcher("/subject/subject_edit_done.jsp").forward(req, resp);
     }
 }
