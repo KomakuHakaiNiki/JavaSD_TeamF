@@ -59,6 +59,7 @@
 </div>
 <nav class="menu-sidebar">
     <div class="menu-nav">
+    	<a href="<%=request.getContextPath()%>/top.jsp">メニュー</a>
         <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
         <span class="menu-nav-title">成績管理</span>
         <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>

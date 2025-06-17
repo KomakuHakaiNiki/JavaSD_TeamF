@@ -127,12 +127,21 @@
 </head>
 <body>
     <!-- ヘッダー -->
-    <div class="header">
-        <span class="header-title">得点管理システム</span>
-        <span class="header-user">
-            <a href="<%=request.getContextPath()%>/logout">ログアウト</a>
-        </span>
-    </div>
+    <%@ page import="bean.Teacher" %>
+<%
+    Teacher loginUser = (Teacher) session.getAttribute("user");
+%>
+
+<div class="header">
+    <span class="header-title">得点管理システム</span>
+    <span class="header-user">
+        <% if (loginUser != null) { %>
+            <%= loginUser.getName() %> 様 |
+        <% } %>
+        <a href="<%=request.getContextPath()%>/logout">ログアウト</a>
+    </span>
+</div>
+
     <div class="main-layout">
         <!-- サイドバー -->
         <nav class="sidebar">
