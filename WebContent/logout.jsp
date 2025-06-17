@@ -1,3 +1,4 @@
+<%-- FILE: WebContent/logout.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -6,75 +7,45 @@
 <meta charset="UTF-8">
 <title>得点管理システム - ログアウト</title>
 <style>
-    /* ページ全体のレイアウトと基本スタイル */
     body {
         margin: 0;
-        font-family: 'Meiryo', 'メイリオ', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', sans-serif;
+        font-family: 'Meiryo', sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        background-color: #ffffff;
+        background-color: #f8f9fa;
     }
-
-    /* ヘッダーのスタイル */
     header {
         background-color: #e7f0ff;
         padding: 20px 40px;
         font-size: 22px;
         font-weight: bold;
         color: #343a40;
+        border-bottom: 1px solid #dee2e6;
     }
-
-    /* メインコンテンツエリアのスタイル */
     main {
         flex-grow: 1;
         padding: 50px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-
     .content-wrapper {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    /* フッターのスタイル */
-    footer {
-        background-color: #e9ecef;
-        padding: 20px 40px;
+        max-width: 600px;
+        width: 100%;
         text-align: center;
-        color: #6c757d;
-        font-size: 14px;
-        border-top: 1px solid #dee2e6;
     }
-
-    /* --- ログアウトコンテンツ関連のスタイル --- */
-
-    .title-bar {
-        background-color: #f8f9fa;
-        padding: 15px 25px;
-        font-size: 20px;
-        font-weight: bold;
-        color: #495057;
-        border: 1px solid #dee2e6;
-        border-radius: 3px;
-    }
-
     .message-box {
-        background-color: #a5d6a7;
-        color: #155724;
-        padding: 15px 25px;
-        margin-top: 25px;
-        border-radius: 3px;
-        font-size: 16px;
-        border: 1px solid #97c999;
-        text-align: center;
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 20px 25px;
+        border-radius: 8px;
+        font-size: 18px;
+        border: 1px solid #c8e6c9;
     }
-
-    /* ③ 「ログイン」へのリンク */
     .login-link {
-        margin-top: 162px; /* 上の余白を広げてリンクを下に移動 */
-        padding-left: 5px;
+        margin-top: 30px;
     }
-
     .login-link a {
         color: #0d6efd;
         text-decoration: underline;
@@ -83,39 +54,38 @@
     .login-link a:hover {
         text-decoration: none;
     }
+    footer {
+        background-color: #e9ecef;
+        padding: 20px 40px;
+        text-align: center;
+        color: #6c757d;
+        font-size: 14px;
+        border-top: 1px solid #dee2e6;
+    }
 </style>
 </head>
 <body>
 
-    <!-- ヘッダー -->
     <header>
         得点管理システム
     </header>
 
-    <!-- メインコンテンツ -->
     <main>
         <div class="content-wrapper">
-            <!-- ① タイトルバー -->
-            <div class="title-bar">
-                ログアウト
-            </div>
-
-            <!-- ② メッセージボックス -->
             <div class="message-box">
                 ログアウトしました
             </div>
 
-            <!-- ③ ログインへのリンク -->
             <div class="login-link">
-                <a href="login.jsp">ログイン</a>
+                <%-- ★修正点: リンク先をLoginServletのURLに変更 --%>
+                <a href="${pageContext.request.contextPath}/login">ログイン画面へ</a>
             </div>
         </div>
     </main>
 
-    <!-- フッター -->
     <footer>
         © 2025 TIC<br>
-         大原学園
+        大原学園
     </footer>
 
 </body>
