@@ -20,25 +20,26 @@
 <%-- containerクラスで全体を囲み、左右に適切な余白を設けます --%>
 <div class="container mt-4">
 
-    <%-- ① 見出し: 元の背景色を維持し、Bootstrapのパディングクラス(p-3)で余白を追加 --%>
-    <h2 style="background-color: #ededed;" class="p-3 mb-3">科目情報登録</h2>
+    <div style="margin-left: 7rem;">
 
-    <%-- ② 完了メッセージ: こちらも元の背景色を維持し、パディング(py-2)と中央揃え(text-center)クラスを追加 --%>
-    <div style="background-color: #a5d6a7;" class="text-center py-2 mb-4">
-        登録が完了しました
-    </div>
+        <%-- ① 見出し --%>
+        <h2 style="background-color: #ededed;" class="p-3 mb-3">　科目情報登録</h2>
 
-    <%-- ③, ④ リンク: BootstrapのFlexboxユーティリティで横並びに配置 --%>
-    <%-- 
-        d-flex: 横並びにする
-        gap-4: リンク間の隙間を空ける
-        ps-3: 左側にパディングを設け、見出しと左端を合わせる
-    --%>
-    <div class="d-flex gap-4 ps-3">
-        <a href="subject_create.jsp">戻る</a>
-        <a href="subject_list.jsp">科目一覧</a>
-    </div>
+        <%-- ② 完了メッセージ --%>
+        <div style="background-color: #a5d6a7;" class="text-center py-2 mb-4">
+            登録が完了しました
+        </div>
+        
+        <p>　</p>
+        <p>　</p>
 
+        <%-- ③, ④ リンク --%>
+        <div class="d-flex" style="gap: 7rem;">
+            <a href="subject_create.jsp">戻る</a>
+            <a href="subject_list.jsp">科目一覧</a>
+        </div>
+
+    </div> 
 </div>
 
 
