@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%-- 
+<%--
   menu.jsp や共通のヘッダーファイルにBootstrapの読み込みがない場合は、
   以下の<head>セクションが必要です。
 --%>
@@ -15,7 +15,7 @@
 <body>
 
 <%-- menu.jsp は<body>タグ内に配置するのが一般的です --%>
-<%@include file="../common/menu.jsp" %>
+<%@include file="../menu.jsp" %>
 
 <%-- containerクラスで全体を囲み、左右に適切な余白を設けます --%>
 <div class="container mt-4">
@@ -29,7 +29,7 @@
         <div style="background-color: #a5d6a7;" class="text-center py-2 mb-4">
             登録が完了しました
         </div>
-        
+
         <p>　</p>
         <p>　</p>
 
@@ -39,7 +39,7 @@
             <a href="subject_list.jsp">科目一覧</a>
         </div>
 
-    </div> 
+    </div>
 </div>
 
 
