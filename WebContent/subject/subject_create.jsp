@@ -1,89 +1,92 @@
+<%-- FILE: WebContent/subject/subject_create.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- セキュリティチェック --%>
+<%
+    if (session.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>科目情報登録 | 得点管理システム</title>
-    <!-- Bootstrap 5 CSS CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>科目登録 | 得点管理システム</title>
+
+    <%-- 共通メニュー(スタイル含む)を読み込み --%>
+    <%@ include file="/menu.jsp" %>
+
+    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body {
-            font-family: "Meiryo", sans-serif;
+        /* このページ専用のスタイル */
+        .main-content {
+            padding: 30px;
+            width: 100%;
+            box-sizing: border-box;
         }
-        .sidebar {
-            min-height: 100vh;
-            border-right: 1px solid #dee2e6;
-            padding-top: 2rem;
+        .form-area {
+            max-width: 700px;
+            margin: 0 auto;
         }
-        .sidebar a {
-            display: block;
-            margin-bottom: 1rem;
-            color: #0d6efd;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            text-decoration: underline;
-        }
-        .sidebar-title {
+        .main-title-row {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 14px 25px;
             font-weight: bold;
-            color: #376345;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.18em;
+        }
+        .form-body {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            padding: 30px 40px;
         }
     </style>
 </head>
 <body>
-    <!-- ヘッダー -->
-    <header class="bg-light px-4 py-3 d-flex justify-content-between align-items-center border-bottom">
-        <h1 class="h4 mb-0">得点管理システム</h1>
-        <div>
-            大原 太郎様　
-            <a href="<%=request.getContextPath()%>/logout" class="text-primary text-decoration-underline">ログアウト</a>
-        </div>
-    </header>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- サイドバー -->
-            <nav class="col-md-2 sidebar bg-white">
-                <a href="<%=request.getContextPath()%>/student/list">学生管理</a>
-                <div class="sidebar-title">成績管理</div>
-                <a href="<%=request.getContextPath()%>/grade/create">成績登録</a>
-                <a href="<%=request.getContextPath()%>/grade/view">成績参照</a>
-                <a href="<%=request.getContextPath()%>/subject/list">科目管理</a>
-            </nav>
+    <!-- 共通メニューは上で読み込み済み -->
 
-            <!-- メインコンテンツ -->
-            <main class="col-md-10 py-5 d-flex justify-content-center">
-                <form action="<%=request.getContextPath()%>/subject/create" method="post" class="w-100" style="max-width: 600px;">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-secondary text-white fw-bold">科目情報登録</div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="subjectCode" class="form-label">科目コード</label>
-                                <input type="text" class="form-control" id="subjectCode" name="subjectCode"
-                                    placeholder="科目コードを入力してください"
-                                    value="${param.subjectCode != null ? param.subjectCode : ''}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="subjectName" class="form-label">科目名</label>
-                                <input type="text" class="form-control" id="subjectName" name="subjectName"
-                                    placeholder="科目名を入力してください"
-                                    value="${param.subjectName != null ? param.subjectName : ''}">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <button type="submit" class="btn btn-primary">登録</button>
-                                <a href="<%=request.getContextPath()%>/subject/list" class="btn btn-link">戻る</a>
-                            </div>
-                        </div>
+    <main class="main-content">
+        <div class="form-area">
+            <div class="main-title-row">
+                <span>科目情報登録</span>
+            </div>
+
+            <div class="form-body">
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger" role="alert">
+                        <c:out value="${error}" />
                     </div>
+                </c:if>
+
+                <form method="post" action="create">
+                    <div class="mb-3">
+                        <label for="cd" class="form-label">科目コード</label>
+                        <input type="text" id="cd" name="cd" class="form-control" value="<c:out value='${cd}'/>" required maxlength="3" placeholder="3文字の半角英数字">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">科目名</label>
+                        <input type="text" id="name" name="name" class="form-control" value="<c:out value='${name}'/>" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">登録</button>
+                    <a href="list" class="btn btn-link text-secondary">戻る</a>
                 </form>
-            </main>
+            </div>
         </div>
+    </main>
+
+    <%-- menu.jspで開始したレイアウト用divをここで閉じる --%>
     </div>
 
-    <!-- Bootstrap 5 JS (必要に応じて) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

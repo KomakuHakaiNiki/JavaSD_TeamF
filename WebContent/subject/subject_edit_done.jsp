@@ -1,48 +1,71 @@
+<%-- FILE: WebContent/subject/subject_update_done.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%--
-  menu.jsp や共通のヘッダーファイルにBootstrapの読み込みがない場合は、
-  以下の<head>セクションが必要です。
---%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- セキュリティチェック --%>
+<%
+    if (session.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>科目情報変更完了</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>科目変更完了 | 得点管理システム</title>
+
+    <%-- 共通メニュー(スタイル含む)を読み込み --%>
+    <%@ include file="/menu.jsp" %>
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* 登録完了画面と共通のスタイル */
+        .main-content { padding: 30px; width: 100%; box-sizing: border-box; }
+        .done-area { max-width: 700px; margin: 0 auto; }
+        .main-title-row {
+            background-color: #f8f9fa; border: 1px solid #dee2e6; border-bottom: none;
+            border-radius: 8px 8px 0 0; padding: 14px 25px;
+            font-weight: bold; font-size: 1.18em;
+        }
+        .done-body {
+            background: #fff; border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6; padding: 40px; text-align: center;
+        }
+        .done-message {
+            background-color: #e8f5e9; color: #2e7d32;
+            padding: 15px 25px; border-radius: 5px; font-size: 1.1em;
+            border: 1px solid #c8e6c9; margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
 
-<%@include file="../menu.jsp" %>
+    <!-- 共通メニューは上で読み込み済み -->
 
-<%-- containerクラスで全体を囲み、左右に適切な余白を設けます --%>
-<div class="container mt-4">
+    <main class="main-content">
+        <div class="done-area">
+            <div class="main-title-row">
+                <span>科目情報変更</span>
+            </div>
 
-    <%-- これまでのページと同じように、左マージンでコンテンツ全体を右に寄せます --%>
-    <div style="margin-left: 7rem;">
+            <div class="done-body">
+                <div class="done-message">
+                    変更が完了しました
+                </div>
 
-        <%-- 見出し: 先頭に全角スペースを追加し、Bootstrapクラスで余白を整えます --%>
-        <h2 style="background-color: #ededed;" class="p-3 mb-3">　科目情報変更</h2>
-
-        <%-- 完了メッセージ: <p>を<div>に変更し、Bootstrapクラスでスタイルを適用します --%>
-        <div style="background-color: #a5d6a7;" class="text-center py-2 mb-4">
-            変更が完了しました
+                <a href="list" class="btn btn-primary">科目一覧へ</a>
+            </div>
         </div>
+    </main>
 
-        <%-- 空白行: <p>タグで空白行を作成します --%>
-        <p>　</p>
-        <p>　</p>
-
-        <%-- リンク: <p>タグで囲み、体裁を整えます --%>
-        <p><a href="subject_list.jsp">科目一覧</a></p>
-
+    <%-- menu.jspで開始したレイアウト用divをここで閉じる --%>
     </div>
-</div>
-
-
-<%-- Bootstrap JS (必要に応じて) --%>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>
 </html>

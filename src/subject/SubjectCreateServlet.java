@@ -1,3 +1,4 @@
+// FILE: JavaSD/src/servlet/subject/SubjectCreateServlet.java
 package subject;
 
 import java.io.IOException;
@@ -36,7 +37,6 @@ public class SubjectCreateServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("--- SubjectCreateServlet doPost Start ---");
         req.setCharacterEncoding("UTF-8");
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
@@ -49,7 +49,6 @@ public class SubjectCreateServlet extends HttpServlet {
 
         String cd = req.getParameter("cd");
         String name = req.getParameter("name");
-        System.out.println("[DEBUG] Received params -> cd: " + cd + ", name: " + name);
 
         // 入力値のチェック
         if (cd == null || cd.trim().isEmpty() || name == null || name.trim().isEmpty()) {
@@ -81,7 +80,8 @@ public class SubjectCreateServlet extends HttpServlet {
             return;
         }
 
-        // 成功した場合、科目一覧ページにリダイレクト
-        resp.sendRedirect(req.getContextPath() + "/subject/list");
+        // ★★★ ここが修正点 ★★★
+        // 成功した場合、登録完了ページにフォワードします。
+        req.getRequestDispatcher("/subject/subject_create_done.jsp").forward(req, resp);
     }
 }

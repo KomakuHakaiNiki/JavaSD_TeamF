@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%-- セキュリティチェック：ログインしていなければログインページに強制移動 --%>
+<%-- セキュリティチェック --%>
 <%
     if (session.getAttribute("user") == null) {
         response.sendRedirect(request.getContextPath() + "/login");
@@ -15,66 +15,63 @@
 <head>
 <meta charset="UTF-8">
 <title>得点管理システム</title>
-<%-- 共通メニューのパスを変更 --%>
-<%@ include file="/menu.jsp" %>
-<style>
-    /* このページ専用のスタイル */
-    .main-content {
-        padding: 40px;
-        width: 100%;
-    }
-    .page-title {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 10px;
-        text-align: center; /* ★★★ この行を追加 ★★★ */
-    }
-    .menu-box-group {
-        display: flex;
-        gap: 40px;
-        flex-wrap: wrap;
-        justify-content: center; /* 中央揃えのために追加 */
-    }
-    .menu-box {
-        flex-basis: 240px;
-        min-height: 150px;
-        border-radius: 16px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        padding: 25px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .menu-box:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    }
-    .menu-box.student { background: #fff0f0; }
-    .menu-box.grade { background: #f0fff0; }
-    .menu-box.subject { background: #f0f8ff; }
-    .menu-title-box {
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-    .menu-link {
-        display: block;
-        margin-top: 8px;
-        text-decoration: none;
-    }
-</style>
 </head>
 <body>
 
-    <!-- 共通メニューは上で読み込み済み -->
+    <%-- ★★★ 共通メニューを<body>の直下で読み込む ★★★ --%>
+    <%@ include file="/menu.jsp" %>
 
-    <!-- このページのメインコンテンツ -->
-    <main class="main-content">
+    <%-- このページ専用のメインコンテンツ --%>
+    <main class="main-content" style="padding: 40px; width: 100%; box-sizing: border-box;">
+        <style>
+            /* このページ専用のスタイル */
+            .page-title {
+                font-size: 1.5em;
+                font-weight: bold;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+                text-align: center;
+                font-family: "Meiryo", sans-serif; /* ★★★ フォントを明示的に指定 ★★★ */
+            }
+            .menu-box-group {
+                display: flex;
+                gap: 40px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .menu-box {
+                flex-basis: 240px;
+                min-height: 150px;
+                border-radius: 16px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                padding: 25px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .menu-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            }
+            .menu-box.student { background: #fff0f0; }
+            .menu-box.grade { background: #f0fff0; }
+            .menu-box.subject { background: #f0f8ff; }
+            .menu-title-box {
+                font-size: 1.2em;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .menu-link {
+                display: block;
+                margin-top: 8px;
+                text-decoration: none;
+            }
+        </style>
+
         <h2 class="page-title">メニュー</h2>
 
         <div class="menu-box-group">

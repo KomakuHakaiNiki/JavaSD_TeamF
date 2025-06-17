@@ -1,119 +1,43 @@
 <%-- FILE: WebContent/student/student_list.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- セキュリティチェック --%>
+<%
+    if (session.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>学生管理 | 得点管理システム</title>
+
+    <%@ include file="/menu.jsp" %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        .main-area {
-            margin: 30px auto;
-            width: 95%;
-            max-width: 850px;
-        }
-        .main-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ededed;
-            border-radius: 8px 8px 0 0;
-            padding: 14px 30px;
-            font-weight: bold;
-            font-size: 1.18em;
-        }
-        .filter-area {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            padding: 20px 30px;
-            background-color: #f8f9fa;
-        }
-        .filter-label {
-            font-weight: bold;
-        }
-        .filter-select, .search-btn {
-            padding: 8px 12px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .search-btn {
-            background-color: #0d6efd;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        .student-table-area {
-            background: #fff;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 2px 8px #ddd;
-            padding: 10px 20px 20px 20px;
-        }
-        .student-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .student-table th, .student-table td {
-            border-bottom: 1px solid #e4e4e4;
-            padding: 12px 15px;
-            text-align: left;
-        }
-        .student-table th {
-            background: #f8fafc;
-        }
-        .table-link {
-            color: #1976d2;
-            text-decoration: none;
-        }
-        .table-link:hover {
-            text-decoration: underline;
-        }
-        .btn-right {
-            font-size: 0.98em;
-            color: #1976d2;
-            text-decoration: none;
-        }
-        .error-message {
-            color: #d32f2f;
-            padding: 10px 30px;
-        }
+        .main-content { padding: 30px; width: 100%; box-sizing: border-box; }
+        .filter-area { background-color: #f8f9fa; }
     </style>
 </head>
 <body>
-    <%-- <%@ include file="/common/menu.jsp" %> --%>
-    <div class="main-area">
-        <div class="main-title-row">
-            <span>学生管理</span>
-            <a href="create" class="btn-right">学生登録</a>
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center bg-light px-4 py-3 rounded-top shadow-sm">
+            <h2 class="h5 mb-0 fw-bold">学生管理</h2>
+            <a href="create" class="btn btn-primary btn-sm">学生登録</a>
         </div>
 
-        <form method="get" action="list">
-            <div class="filter-area">
-                <span class="filter-label">入学年度</span>
-                <select name="entYear" class="filter-select">
-                    <option value="0">すべて</option>
-                    <c:forEach var="year" items="${entYearList}">
-                        <option value="${year}" <c:if test="${year eq param.entYear}">selected</c:if>>${year}</option>
-                    </c:forEach>
-                </select>
-
-                <span class="filter-label">クラス</span>
-                <select name="classNum" class="filter-select">
-                    <option value="">すべて</option>
-                    <c:forEach var="classNumItem" items="${classNumList}">
-                        <option value="${classNumItem}" <c:if test="${classNumItem eq param.classNum}">selected</c:if>>${classNumItem}</option>
-                    </c:forEach>
-                </select>
-                <button type="submit" class="search-btn">絞り込み</button>
-            </div>
+        <form method="get" action="list" class="filter-area px-4 py-3 border-start border-end">
+            <%-- ... 絞り込みフォーム ... --%>
         </form>
 
-        <c:if test="${not empty error}">
-            <p class="error-message"><c:out value="${error}" /></p>
-        </c:if>
-
-        <div class="student-table-area">
-            <table class="student-table">
+        <div class="bg-white px-4 pb-4 pt-2 rounded-bottom shadow-sm">
+            <table class="table table-hover align-middle mt-3">
                 <thead>
                     <tr>
                         <th>入学年度</th>
@@ -133,13 +57,15 @@
                             <td>${student.name}</td>
                             <td>${student.attend ? 'はい' : 'いいえ'}</td>
                             <td>
-                                <a href="update?no=${student.no}" class="table-link">変更</a>
+                                <%-- ★★★ このリンクを "update" に修正 ★★★ --%>
+                                <a href="update?no=${student.no}" class="btn btn-outline-primary btn-sm">変更</a>
                             </td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
         </div>
+    </main>
     </div>
 </body>
 </html>

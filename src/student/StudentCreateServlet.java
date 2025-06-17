@@ -69,7 +69,6 @@ public class StudentCreateServlet extends HttpServlet {
         // 入力値のバリデーション
         if (no == null || no.trim().isEmpty() || name == null || name.trim().isEmpty() || entYearStr == null || entYearStr.trim().isEmpty()) {
             req.setAttribute("error", "学籍番号、氏名、入学年度は必須入力です。");
-            // エラー時もフォームの選択肢と入力値を保持して戻す
             populateFormAndForward(req, resp);
             return;
         }
@@ -106,8 +105,8 @@ public class StudentCreateServlet extends HttpServlet {
             return;
         }
 
-        // 完了後は学生一覧画面にリダイレクト
-        resp.sendRedirect(req.getContextPath() + "/student/list");
+        // ★★★ 登録成功時、登録完了ページにフォワード ★★★
+        req.getRequestDispatcher("/student/student_create_done.jsp").forward(req, resp);
     }
 
     /**
@@ -116,14 +115,11 @@ public class StudentCreateServlet extends HttpServlet {
     private void populateFormAndForward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StudentDAO dao = new StudentDAO();
         try {
-            // クラス番号のリストを再取得
             List<String> classNums = dao.getClassNums();
             req.setAttribute("classNumList", classNums);
         } catch (Exception e) {
             e.printStackTrace();
-            // このエラーは致命的ではないので、続行
         }
-        // 入力された値をリクエストスコープにセットして画面に戻す
         req.setAttribute("no", req.getParameter("no"));
         req.setAttribute("name", req.getParameter("name"));
         req.setAttribute("entYear", req.getParameter("entYear"));

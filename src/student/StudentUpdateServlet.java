@@ -18,10 +18,6 @@ import dao.StudentDAO;
 @WebServlet("/student/update")
 public class StudentUpdateServlet extends HttpServlet {
 
-    /**
-     * 学生更新ページを表示します。
-     * データベースから変更対象の学生情報と、クラス選択用のリストを取得します。
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -33,29 +29,18 @@ public class StudentUpdateServlet extends HttpServlet {
         String no = req.getParameter("no");
         StudentDAO dao = new StudentDAO();
         try {
-            // 変更対象の学生情報を取得
             Student student = dao.getStudentById(no);
-            // クラス選択プルダウン用のリストを取得
             List<String> classNums = dao.getClassNums();
-
-            // 取得したデータをJSPに渡すためにリクエストスコープにセット
             req.setAttribute("student", student);
             req.setAttribute("classNumList", classNums);
-
-            // 変更ページにフォワード
             req.getRequestDispatcher("/student/student_edit.jsp").forward(req, resp);
-
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "学生情報の取得中にエラーが発生しました。");
-            // エラーが発生した場合は一覧ページに戻る
-            req.getRequestDispatcher("/student/list").forward(req, resp);
+            req.getRequestDispatcher("list").forward(req, resp);
         }
     }
 
-    /**
-     * フォームから送信された情報で学生を更新します。
-     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
@@ -66,29 +51,19 @@ public class StudentUpdateServlet extends HttpServlet {
             return;
         }
 
-        // フォームから送信されたデータを取得
         String no = req.getParameter("no");
         String name = req.getParameter("name");
-        String entYearStr = req.getParameter("entYear");
+        int entYear = Integer.parseInt(req.getParameter("entYear"));
         String classNum = req.getParameter("classNum");
         boolean isAttend = req.getParameter("isAttend") != null;
 
-        int entYear = 0;
-        try {
-             entYear = Integer.parseInt(entYearStr);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            // エラー処理（本来はエラーメッセージをセットして戻す）
-        }
-
-        // Studentオブジェクトに値をセット
         Student student = new Student();
         student.setNo(no);
         student.setName(name);
         student.setEntyear(entYear);
         student.setClassNum(classNum);
         student.setAttend(isAttend);
-        student.setSchool(user.getSchool()); // ログインユーザーの学校情報をセット
+        student.setSchool(user.getSchool());
 
         StudentDAO dao = new StudentDAO();
         try {
@@ -96,8 +71,7 @@ public class StudentUpdateServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "学生情報の更新に失敗しました。");
-            req.setAttribute("student", student); // 入力内容を保持
-            // エラー時もプルダウン用のリストを再取得して画面に戻す
+            req.setAttribute("student", student);
             try {
                  List<String> classNums = dao.getClassNums();
                  req.setAttribute("classNumList", classNums);
@@ -108,7 +82,6 @@ public class StudentUpdateServlet extends HttpServlet {
             return;
         }
 
-        // 成功した場合、学生一覧画面にリダイレクト
-        resp.sendRedirect(req.getContextPath() + "/student/list");
+        req.getRequestDispatcher("/student/student_edit_done.jsp").forward(req, resp);
     }
 }

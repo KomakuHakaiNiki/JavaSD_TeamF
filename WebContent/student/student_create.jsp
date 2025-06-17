@@ -1,134 +1,111 @@
 <%-- FILE: WebContent/student/student_create.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- セキュリティチェック --%>
+<%
+    if (session.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>学生情報登録 | 得点管理システム</title>
-<style>
-    /* 既存の画面と共通のスタイルを想定 */
-    body {
-        font-family: "Meiryo", sans-serif;
-        background: #f7fafd;
-        margin: 0;
-    }
-    .main-area {
-        margin: 30px auto;
-        width: 90%;
-        max-width: 650px;
-    }
-    .main-title-row {
-        background: #ededed;
-        border-radius: 8px;
-        padding: 14px 30px;
-        font-weight: bold;
-        font-size: 1.18em;
-        margin-bottom: 20px;
-    }
-    .form-area {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px #ddd;
-        padding: 30px 40px;
-    }
-    .form-group {
-        margin-bottom: 20px;
-    }
-    .form-label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-    .form-input, .form-select {
-        width: 100%;
-        padding: 10px;
-        font-size: 1em;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    .form-btn {
-        background: #4285f4;
-        color: #fff;
-        border: none;
-        padding: 12px 30px;
-        font-size: 1em;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .form-btn:hover {
-        background: #3367d6;
-    }
-    .error-message {
-        color: #d32f2f;
-        background: #ffebee;
-        border: 1px solid #ffcdd2;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-    }
-    .back-link {
-        display: inline-block;
-        margin-top: 20px;
-        color: #555;
-        text-decoration: none;
-    }
-    .back-link:hover {
-        text-decoration: underline;
-    }
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学生登録 | 得点管理システム</title>
+
+    <%-- 共通メニュー(スタイル含む)を読み込み --%>
+    <%@ include file="/menu.jsp" %>
+
+    <style>
+        /* このページ専用のスタイル */
+        .main-content {
+            padding: 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-area {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .main-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 14px 25px;
+            font-weight: bold;
+            font-size: 1.18em;
+        }
+        .form-body {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            padding: 30px 40px;
+        }
+        .form-label { font-weight: bold; margin-bottom: 0.5rem; }
+        .checkbox-label { font-weight: normal; }
+    </style>
 </head>
 <body>
-    <%-- <%@ include file="/common/menu.jsp" %> --%>
-    <div class="main-area">
-        <div class="main-title-row">
-            <span>学生情報登録</span>
-        </div>
 
+    <!-- 共通メニューは上で読み込み済み -->
+
+    <main class="main-content">
         <div class="form-area">
-            <%-- サーブレットから渡されたエラーメッセージを表示 --%>
-            <c:if test="${not empty error}">
-                <p class="error-message"><c:out value="${error}" /></p>
-            </c:if>
+            <div class="main-title-row">
+                <span>学生情報登録</span>
+            </div>
 
-            <form method="post" action="create">
-                <div class="form-group">
-                    <label for="entYear">入学年度</label>
-                    <input type="number" id="entYear" name="entYear" class="form-input" value="<c:out value='${entYear}'/>" required placeholder="例: 2024">
-                </div>
-                <div class="form-group">
-                    <label for="no">学生番号</label>
-                    <input type="text" id="no" name="no" class="form-input" value="<c:out value='${no}'/>" required maxlength="7" placeholder="7桁の半角数字">
-                </div>
-                <div class="form-group">
-                    <label for="name">氏名</label>
-                    <input type="text" id="name" name="name" class="form-input" value="<c:out value='${name}'/>" required>
-                </div>
-                <div class="form-group">
-                    <label for="classNum">クラス</label>
-                    <select id="classNum" name="classNum" class="form-select">
-                        <option value="">-----</option>
-                        <%-- サーブレットから渡されたクラス一覧で選択肢を生成 --%>
-                        <c:forEach var="classNumItem" items="${classNumList}">
-                           <option value="${classNumItem}" <c:if test="${classNumItem eq classNum}">selected</c:if>>${classNumItem}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="isAttend" name="isAttend" value="true" ${isAttend ? 'checked' : ''}>
-                    <label for="isAttend">在学中</label>
-                </div>
-                <button type="submit" class="form-btn">登録</button>
-            </form>
-            <a href="list" class="back-link">一覧へ戻る</a>
+            <div class="form-body">
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger" role="alert">
+                        <c:out value="${error}" />
+                    </div>
+                </c:if>
+
+                <form method="post" action="create">
+                    <div class="mb-3">
+                        <label for="entYear" class="form-label">入学年度</label>
+                        <input type="number" id="entYear" name="entYear" class="form-control" value="<c:out value='${entYear}'/>" required placeholder="例: 2024">
+                    </div>
+                    <div class="mb-3">
+                        <label for="no" class="form-label">学生番号</label>
+                        <input type="text" id="no" name="no" class="form-control" value="<c:out value='${no}'/>" required maxlength="7" placeholder="7桁の半角数字">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">氏名</label>
+                        <input type="text" id="name" name="name" class="form-control" value="<c:out value='${name}'/>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="classNum" class="form-label">クラス</label>
+                        <select id="classNum" name="classNum" class="form-select">
+                            <option value="">-----</option>
+                            <c:forEach var="classNumItem" items="${classNumList}">
+                               <option value="${classNumItem}" <c:if test="${classNumItem eq classNum}">selected</c:if>>${classNumItem}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" id="isAttend" name="isAttend" value="true" class="form-check-input" ${isAttend ? 'checked' : ''}>
+                        <label for="isAttend" class="form-check-label checkbox-label">在学中</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">登録</button>
+                    <a href="list" class="btn btn-link text-secondary">戻る</a>
+                </form>
+            </div>
         </div>
+    </main>
+
+    <%-- menu.jspで開始したレイアウト用divをここで閉じる --%>
     </div>
+
 </body>
 </html>
