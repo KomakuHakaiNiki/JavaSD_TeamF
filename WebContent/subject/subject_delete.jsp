@@ -5,68 +5,42 @@
 <head>
     <meta charset="UTF-8">
     <title>科目情報削除 | 得点管理システム</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .main-area {
-            margin: 30px 0 0 240px;
+            margin-left: 240px;
+            padding-top: 40px;
             min-width: 450px;
-        }
-        .main-title-row {
-            background: #ededed;
-            border-radius: 8px 8px 0 0;
-            padding: 14px 30px;
-            font-weight: bold;
-            font-size: 1.18em;
-        }
-        .delete-box {
-            background: #fff;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 2px 8px #ddd;
-            padding: 32px 40px 40px 40px;
-            margin-top: 0;
-            min-height: 160px;
-        }
-        .delete-message {
-            margin: 12px 0 26px 0;
-            font-size: 1.09em;
-        }
-        .delete-btn {
-            background: #e55b63;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            padding: 8px 32px;
-            margin-right: 30px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .delete-btn:hover {
-            background: #b8323c;
-        }
-        .back-link {
-            color: #1976d2;
-            text-decoration: underline;
-            margin-left: 5px;
-            font-size: 1em;
         }
     </style>
 </head>
 <body>
-    <div class="main-area">
-        <div class="main-title-row">科目情報削除</div>
-        <div class="delete-box">
-            <form action="<%=request.getContextPath()%>/subject/delete" method="post">
-                <!-- ②科目名を表示（サーブレットでリクエスト属性でセット） -->
-                <div class="delete-message">
-                    「${subject.name}（${subject.cd}）」を削除してよろしいですか？
-                </div>
-                <!-- ③削除ボタン -->
-                <input type="hidden" name="cd" value="${subject.cd}">
-                <button type="submit" class="delete-btn">削除</button>
-                <!-- ④戻る -->
-                <a href="<%=request.getContextPath()%>/subject/list" class="back-link">戻る</a>
-            </form>
+    <div class="main-area container">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white fw-bold fs-5">
+                科目情報削除
+            </div>
+            <div class="card-body">
+                <form action="<%=request.getContextPath()%>/subject/delete" method="post">
+                    <!-- 科目名表示 -->
+                    <p class="fs-6 mb-4">
+                        「<span class="fw-bold">${subject.name}</span>（<span>${subject.cd}</span>）」を削除してよろしいですか？
+                    </p>
+                    <!-- 隠しパラメータ（科目コード） -->
+                    <input type="hidden" name="cd" value="${subject.cd}" />
+                    
+                    <!-- 削除ボタン -->
+                    <button type="submit" class="btn btn-danger me-3">削除</button>
+
+                    <!-- 戻るリンク -->
+                    <a href="<%=request.getContextPath()%>/subject/list" class="btn btn-outline-secondary">戻る</a>
+                </form>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap 5 JS（必要であれば） -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
