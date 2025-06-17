@@ -3,6 +3,7 @@ package subject;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -25,27 +26,36 @@ public class SubjectListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("--- SubjectListServlet doGet Start ---"); // デバッグログ
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
 
+        // ログインチェック
         if (user == null) {
+            System.out.println("[DEBUG] User not logged in. Redirecting to login page.");
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
-        // ★NullPointerExceptionを回避するため、学校情報がnullでないことを確認
-        if (user.getSchool() == null) {
+        // 学校情報チェック
+        if (user.getSchool() == null || user.getSchool().getCd() == null) {
+            System.out.println("[DEBUG] School info not in session for user: " + user.getId());
             req.setAttribute("error", "ユーザー情報に学校が設定されていません。");
             req.getRequestDispatcher("/subject/subject_list.jsp").forward(req, resp);
             return;
         }
 
-        SubjectDAO dao = new SubjectDAO();
-        List<Subject> list = null;
+        String schoolCd = user.getSchool().getCd();
+        System.out.println("[DEBUG] Logged in user's school_cd: " + schoolCd);
 
-        // ★ try-catchブロックを詳細化
+        SubjectDAO dao = new SubjectDAO();
+        List<Subject> list = new ArrayList<>(); // 空で初期化
+
+        // try-catchブロックでエラーを詳細に捕捉
         try {
-            list = dao.filterBySchool(user.getSchool().getCd());
+            list = dao.filterBySchool(schoolCd);
+            System.out.println("[DEBUG] dao.filterBySchool() result size: " + list.size()); // ★取得件数を確認
+
         } catch (NamingException e) {
             e.printStackTrace();
             req.setAttribute("error", "データベースリソースの取得に失敗しました。context.xmlの設定を確認してください。");
@@ -58,6 +68,7 @@ public class SubjectListServlet extends HttpServlet {
         }
 
         req.setAttribute("subjects", list);
+        System.out.println("--- Forwarding to JSP ---");
         req.getRequestDispatcher("/subject/subject_list.jsp").forward(req, resp);
     }
 
