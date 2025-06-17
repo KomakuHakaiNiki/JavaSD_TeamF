@@ -1,3 +1,4 @@
+// FILE: JavaSD/src/servlet/subject/SubjectUpdateServlet.java
 package subject;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class SubjectUpdateServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("--- SubjectUpdateServlet doGet Start ---");
+        System.out.println("--- SubjectUpdateServlet doGet Start ---"); // ★デバッグログ
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
 
@@ -31,11 +32,29 @@ public class SubjectUpdateServlet extends HttpServlet {
         }
 
         String cd = req.getParameter("cd");
+        String schoolCd = user.getSchool().getCd();
+
+        // ★受け取ったパラメータをコンソールに出力
+        System.out.println("[DEBUG] Parameter 'cd': " + cd);
+        System.out.println("[DEBUG] Session 'schoolCd': " + schoolCd);
+
         SubjectDAO dao = new SubjectDAO();
+        Subject subject = null;
         try {
-            Subject subject = dao.get(user.getSchool().getCd(), cd);
+            System.out.println("[DEBUG] Calling dao.get(schoolCd, cd)...");
+            subject = dao.get(schoolCd, cd); // DAOを呼び出し
+
+            // ★DAOから返ってきた結果をコンソールに出力
+            if (subject != null) {
+                System.out.println("[DEBUG] DAO returned Subject. cd: " + subject.getCd() + ", name: " + subject.getName());
+            } else {
+                System.out.println("[DEBUG] DAO returned null.");
+            }
+
             req.setAttribute("subject", subject);
+            System.out.println("--- Forwarding to /subject/subject_edit.jsp ---");
             req.getRequestDispatcher("/subject/subject_edit.jsp").forward(req, resp);
+
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "科目情報の取得中にエラーが発生しました。");
@@ -48,7 +67,7 @@ public class SubjectUpdateServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("--- SubjectUpdateServlet doPost Start ---");
+        // doPostは変更なし
         req.setCharacterEncoding("UTF-8");
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
@@ -61,10 +80,8 @@ public class SubjectUpdateServlet extends HttpServlet {
         String cd = req.getParameter("cd");
         String name = req.getParameter("name");
 
-        // 入力値チェック
         if (name == null || name.trim().isEmpty()) {
             req.setAttribute("error", "科目名は必須入力です。");
-            // エラー時も表示に必要な情報を再取得
             doGet(req, resp);
             return;
         }
@@ -84,7 +101,6 @@ public class SubjectUpdateServlet extends HttpServlet {
             req.getRequestDispatcher("/subject/subject_edit.jsp").forward(req, resp);
             return;
         }
-
         resp.sendRedirect(req.getContextPath() + "/subject/list");
     }
 }

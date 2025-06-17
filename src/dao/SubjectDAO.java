@@ -42,6 +42,7 @@ public class SubjectDAO extends DAO {
     }
 
     /**
+     * ★★★ このメソッドが今回の問題の原因です ★★★
      * 主キー（学校コード、科目コード）で科目を1件取得します。
      * @param schoolCd 学校コード
      * @param cd 科目コード
@@ -50,11 +51,16 @@ public class SubjectDAO extends DAO {
      */
     public Subject get(String schoolCd, String cd) throws Exception {
         Subject subject = null;
+        // SQL文が正しく引数(？)を使っていることを確認
         String sql = "SELECT * FROM SUBJECT WHERE SCHOOL_CD = ? AND CD = ?";
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
+
+            // 1番目の?に学校コードをセット
             st.setString(1, schoolCd);
+            // 2番目の?に科目コードをセット
             st.setString(2, cd);
+
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     subject = new Subject();
@@ -72,9 +78,6 @@ public class SubjectDAO extends DAO {
 
     /**
      * 科目を新規登録します。
-     * @param subject 登録する科目情報 (Schoolオブジェクトを含む)
-     * @return 実行された行数
-     * @throws Exception
      */
     public int insert(Subject subject) throws Exception {
         String sql = "INSERT INTO SUBJECT (SCHOOL_CD, CD, NAME) VALUES (?, ?, ?)";
@@ -89,9 +92,6 @@ public class SubjectDAO extends DAO {
 
     /**
      * 科目情報を更新します。
-     * @param subject 更新する科目情報
-     * @return 実行された行数
-     * @throws Exception
      */
     public int update(Subject subject) throws Exception {
         String sql = "UPDATE SUBJECT SET NAME = ? WHERE SCHOOL_CD = ? AND CD = ?";
@@ -106,10 +106,6 @@ public class SubjectDAO extends DAO {
 
     /**
      * 科目を削除します。
-     * @param schoolCd 学校コード
-     * @param cd 科目コード
-     * @return 実行された行数
-     * @throws Exception
      */
     public int delete(String schoolCd, String cd) throws Exception {
         String sql = "DELETE FROM SUBJECT WHERE SCHOOL_CD = ? AND CD = ?";
