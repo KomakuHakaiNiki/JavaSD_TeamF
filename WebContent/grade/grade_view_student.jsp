@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>成績一覧（学生）</title>
+    <title>成績一覧</title>
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -49,7 +49,7 @@
 
 <div class="content-box">
     <div class="content-header">
-        成績一覧（学生）
+        成績一覧
     </div>
     <div class="content-body">
         <!-- 科目情報 -->

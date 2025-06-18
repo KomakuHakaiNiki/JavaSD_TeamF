@@ -34,6 +34,8 @@
 </style>
 </head>
 <body>
+<%--成績登録の『成績登録』 --%>
+
 <div class="main-area">
     <!-- タイトル -->
     <div class="main-title-row">成績管理</div>
