@@ -4,24 +4,83 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import bean.Test;
+import bean.Subject;
 import bean.TestListStudent;
+import bean.TestListSubject;
 
 public class TestListStudentDAO extends DAO {
 
     /**
-     * 指定した学生番号のテスト成績一覧を取得します。
+     * 科目情報で成績を検索します。
+     * @param entYear 入学年度
+     * @param classNum クラス番号
+     * @param subject 科目オブジェクト
+     * @param schoolCd 学校コード
+     * @return TestListSubjectのリスト
+     * @throws Exception
      */
-    public List<TestListStudent> getTestListByStudentNo(String studentNo) throws Exception {
+    public List<TestListSubject> filterBySubject(int entYear, String classNum, Subject subject, String schoolCd) throws Exception {
+        List<TestListSubject> list = new ArrayList<>();
+        String sql = "SELECT s.ENT_YEAR, s.NO AS student_no, s.NAME AS student_name, s.CLASS_NUM, t.NO AS test_no, t.POINT "
+                   + "FROM STUDENT s "
+                   + "LEFT JOIN TEST t ON s.NO = t.STUDENT_NO AND t.SUBJECT_CD = ? AND t.SCHOOL_CD = ? "
+                   + "WHERE s.ENT_YEAR = ? AND s.CLASS_NUM = ? AND s.SCHOOL_CD = ? "
+                   + "ORDER BY s.NO ASC";
+
+        try (Connection con = getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, subject.getCd());
+            st.setString(2, schoolCd);
+            st.setInt(3, entYear);
+            st.setString(4, classNum);
+            st.setString(5, schoolCd);
+
+            try (ResultSet rs = st.executeQuery()) {
+                // 学生ごとに点数をまとめるためのMap
+                Map<String, TestListSubject> map = new HashMap<>();
+
+                while (rs.next()) {
+                    String studentNo = rs.getString("student_no");
+                    TestListSubject tls;
+
+                    if (map.containsKey(studentNo)) {
+                        tls = map.get(studentNo);
+                    } else {
+                        tls = new TestListSubject();
+                        tls.setEntYear(rs.getInt("ENT_YEAR"));
+                        tls.setStudentNo(studentNo);
+                        tls.setStudentName(rs.getString("student_name"));
+                        tls.setClassNum(rs.getString("CLASS_NUM"));
+                        tls.setPoints(new HashMap<>());
+                        map.put(studentNo, tls);
+                    }
+
+                    // 点数をMapに追加
+                    tls.getPoints().put(rs.getInt("test_no"), rs.getInt("POINT"));
+                }
+                // Mapの値をリストに変換
+                list.addAll(map.values());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 学生番号で成績を検索します。
+     */
+    public List<TestListStudent> filterByStudent(String studentNo) throws Exception {
         List<TestListStudent> list = new ArrayList<>();
         String sql =
-            "SELECT S.NAME AS subjectName, S.CD AS subjectCd, T.NO, T.POINT " +
-            "FROM TEST T " +
-            "JOIN SUBJECT S ON T.SUBJECT_CD = S.CD AND T.SCHOOL_CD = S.SCHOOL_CD " +
-            "WHERE T.STUDENT_NO = ? " +
-            "ORDER BY S.CD, T.NO";
+            "SELECT sub.NAME AS subject_name, sub.CD AS subject_cd, t.NO, t.POINT " +
+            "FROM TEST t " +
+            "JOIN SUBJECT sub ON t.SUBJECT_CD = sub.CD AND t.SCHOOL_CD = sub.SCHOOL_CD " +
+            "WHERE t.STUDENT_NO = ? " +
+            "ORDER BY sub.CD, t.NO ASC";
 
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -29,80 +88,14 @@ public class TestListStudentDAO extends DAO {
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     TestListStudent test = new TestListStudent();
-                    test.setSubjectName(rs.getString("subjectName"));
-                    test.setSubjectCd(rs.getString("subjectCd"));
+                    test.setSubjectName(rs.getString("subject_name"));
+                    test.setSubjectCd(rs.getString("subject_cd"));
                     test.setNum(rs.getInt("NO"));
-                    test.setPoint(rs.getInt("point"));
+                    test.setPoint(rs.getInt("POINT"));
                     list.add(test);
                 }
             }
         }
         return list;
-    }
-
-    // ========== ここからが追加されたメソッド ==========
-
-    /**
-     * 成績を一件取得します。
-     */
-    public Test get(String studentNo, String subjectCd, String schoolCd, int no) throws Exception {
-        Test test = null;
-        String sql = "SELECT * FROM TEST WHERE STUDENT_NO = ? AND SUBJECT_CD = ? AND SCHOOL_CD = ? AND NO = ?";
-        try (Connection con = getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, studentNo);
-            st.setString(2, subjectCd);
-            st.setString(3, schoolCd);
-            st.setInt(4, no);
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    test = new Test();
-                    // ... (必要に応じてBeanに値をセット)
-                }
-            }
-        }
-        return test;
-    }
-
-    /**
-     * 成績を登録または更新します。
-     */
-    public boolean save(Test test) throws Exception {
-        String sql_check = "SELECT COUNT(*) FROM TEST WHERE STUDENT_NO = ? AND SUBJECT_CD = ? AND SCHOOL_CD = ? AND NO = ?";
-        String sql_insert = "INSERT INTO TEST(STUDENT_NO, SUBJECT_CD, SCHOOL_CD, NO, POINT, CLASS_NUM) VALUES(?, ?, ?, ?, ?, ?)";
-        String sql_update = "UPDATE TEST SET POINT = ? WHERE STUDENT_NO = ? AND SUBJECT_CD = ? AND SCHOOL_CD = ? AND NO = ?";
-        int count = 0;
-
-        try (Connection con = getConnection()) {
-            try (PreparedStatement st_check = con.prepareStatement(sql_check)) {
-                st_check.setString(1, test.getStudent().getNo());
-                st_check.setString(2, test.getSubject().getCd());
-                st_check.setString(3, test.getSchool().getCd());
-                st_check.setInt(4, test.getNo());
-                try(ResultSet rs = st_check.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) > 0) { // レコードが存在する場合
-                        try (PreparedStatement st_update = con.prepareStatement(sql_update)) {
-                            st_update.setInt(1, test.getPoint());
-                            st_update.setString(2, test.getStudent().getNo());
-                            st_update.setString(3, test.getSubject().getCd());
-                            st_update.setString(4, test.getSchool().getCd());
-                            st_update.setInt(5, test.getNo());
-                            count = st_update.executeUpdate();
-                        }
-                    } else { // レコードが存在しない場合
-                        try (PreparedStatement st_insert = con.prepareStatement(sql_insert)) {
-                            st_insert.setString(1, test.getStudent().getNo());
-                            st_insert.setString(2, test.getSubject().getCd());
-                            st_insert.setString(3, test.getSchool().getCd());
-                            st_insert.setInt(4, test.getNo());
-                            st_insert.setInt(5, test.getPoint());
-                            st_insert.setString(6, test.getClassNum());
-                            count = st_insert.executeUpdate();
-                        }
-                    }
-                }
-            }
-        }
-        return count > 0;
     }
 }

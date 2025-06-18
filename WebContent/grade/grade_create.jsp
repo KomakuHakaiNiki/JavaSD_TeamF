@@ -1,105 +1,87 @@
+<%-- FILE: WebContent/grade/grade_create.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="/menu.jsp" %>
+
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>成績管理 | 得点管理システム</title>
-
-<!-- ✅ Bootstrap 5 CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    .main-area {
-        margin: 35px 0 0 240px;
-        min-width: 600px;
-    }
-    .main-title-row {
-        background: #ededed;
-        border-radius: 8px 8px 0 0;
-        padding: 13px 30px;
-        font-weight: bold;
-        font-size: 1.17em;
-        margin-bottom: 0;
-    }
-    .form-box {
-        background: #fff;
-        border-radius: 0 0 12px 12px;
-        box-shadow: 0 2px 8px #ddd;
-        padding: 26px 40px 28px 40px;
-        margin-bottom: 24px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>成績登録 | 得点管理システム</title>
+    <%@ include file="/menu.jsp" %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-content { padding: 30px; width: 100%; box-sizing: border-box; }
+        .regist-area { max-width: 950px; margin: 0 auto; }
+        .title-row { background: #f8f9fa; border: 1px solid #dee2e6; border-bottom: none; border-radius: 8px 8px 0 0; padding: 14px 25px; font-weight: bold;}
+        .form-body { background: #fff; border-radius: 0 0 12px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #dee2e6; padding: 20px 30px;}
+        .results-info { font-weight: bold; font-size: 1.1em; }
+    </style>
 </head>
 <body>
-<div class="main-area">
-    <!-- タイトル -->
-    <div class="main-title-row">成績管理</div>
+    <main class="main-content">
+        <div class="regist-area">
+            <div class="title-row">成績管理</div>
+            <div class="form-body">
+                <form method="post" action="create">
+                    <input type="hidden" name="cmd" value="search">
+                    <div class="row gx-3 gy-2 align-items-end mb-3">
+                        <div class="col-sm-2"><label class="form-label">入学年度</label>
+                            <select name="f1" class="form-select">
+                                <c:forEach var="year" items="${ent_years}"><option value="${year}" <c:if test="${year eq param.f1}">selected</c:if>>${year}</option></c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-sm-2"><label class="form-label">クラス</label>
+                            <select name="f2" class="form-select">
+                                <c:forEach var="c" items="${class_nums}"><option value="${c}" <c:if test="${c eq param.f2}">selected</c:if>>${c}</option></c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-sm-3"><label class="form-label">科目</label>
+                            <select name="f3" class="form-select">
+                                <c:forEach var="s" items="${subjects}"><option value="${s.cd}" <c:if test="${s.cd eq param.f3}">selected</c:if>>${s.name}</option></c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-sm-2"><label class="form-label">回数</label>
+                            <select name="f4" class="form-select">
+                                <option value="1" <c:if test="${'1' eq param.f4}">selected</c:if>>1</option>
+                                <option value="2" <c:if test="${'2' eq param.f4}">selected</c:if>>2</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-auto"><button type="submit" class="btn btn-secondary">検索</button></div>
+                    </div>
+                </form>
 
-    <!-- 検索フォーム -->
-    <div class="form-box">
-        <form action="<%=request.getContextPath()%>/grade/search" method="get">
-            <div class="row g-3 align-items-end">
-                <!-- 入学年度 -->
-                <div class="col-md-2">
-                    <label for="entYear" class="form-label">入学年度</label>
-                    <select class="form-select" id="entYear" name="entYear">
-                        <option value="">------</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                    </select>
-                </div>
-
-                <!-- クラス -->
-                <div class="col-md-2">
-                    <label for="classNum" class="form-label">クラス</label>
-                    <select class="form-select" id="classNum" name="classNum">
-                        <option value="">------</option>
-                        <option value="101">101</option>
-                        <option value="131">131</option>
-                        <option value="201">201</option>
-                    </select>
-                </div>
-
-                <!-- 科目 -->
-                <div class="col-md-3">
-                    <label for="subjectCd" class="form-label">科目</label>
-                    <select class="form-select" id="subjectCd" name="subjectCd">
-                        <option value="">------</option>
-                        <option value="A01">Python1</option>
-                        <option value="B02">Java1</option>
-                        <option value="C02">データベース</option>
-                    </select>
-                </div>
-
-                <!-- 回数 -->
-                <div class="col-md-2">
-                    <label for="times" class="form-label">回数</label>
-                    <select class="form-select" id="times" name="times">
-                        <option value="">------</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                </div>
-
-                <!-- 検索ボタン -->
-                <div class="col-md-auto">
-                    <button type="submit" class="btn btn-dark">検索</button>
-                </div>
+                <c:if test="${not empty results}">
+                    <hr>
+                    <p class="results-info">科目: ${subjects.stream().filter(s -> s.cd.equals(param.f3)).findFirst().get().name} (${param.f4}回)</p>
+                    <form method="post" action="create">
+                        <input type="hidden" name="cmd" value="regist">
+                        <input type="hidden" name="subject_cd" value="${param.f3}">
+                        <input type="hidden" name="num" value="${param.f4}">
+                        <table class="table table-sm table-bordered">
+                            <thead><tr><th>入学年度</th><th>クラス</th><th>学生番号</th><th>氏名</th><th>点数</th></tr></thead>
+                            <tbody>
+                            <c:forEach var="r" items="${results}">
+                                <tr>
+                                    <td>${param.f1}</td>
+                                    <td>${r.classNum}</td>
+                                    <td>${r.student.no}</td>
+                                    <td>${r.student.name}</td>
+                                    <td><input type="number" name="point_${r.student.no}" value="${r.point}" class="form-control" min="0" max="100"></td>
+                                    <input type="hidden" name="class_num_${r.student.no}" value="${r.classNum}">
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                        <%-- ★★★ ここを "text-start" に修正 ★★★ --%>
+                        <div class="text-start mt-3">
+                            <button type="submit" class="btn btn-primary">登録して終了</button>
+                        </div>
+                    </form>
+                </c:if>
             </div>
-        </form>
-
-        <!-- ✅ 検索されたときのみ表示する登録ボタン -->
-        <c:if test="${not empty param.entYear or not empty param.classNum or not empty param.subjectCd or not empty param.times}">
-            <div class="mt-4 text-end">
-                <a href="${pageContext.request.contextPath}/grade/register" class="btn btn-secondary">登録して終了</a>
-            </div>
-        </c:if>
+        </div>
+    </main>
     </div>
-</div>
 </body>
 </html>
