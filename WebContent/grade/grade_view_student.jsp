@@ -1,3 +1,5 @@
+<%--成績管理の『成績参照』 --%>
+
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/menu.jsp" %>
