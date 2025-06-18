@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bean.Subject;
 import bean.TestListStudent;
 import bean.TestListSubject;
 
@@ -18,12 +17,12 @@ public class TestListStudentDAO extends DAO {
      * 科目情報で成績を検索します。
      * @param entYear 入学年度
      * @param classNum クラス番号
-     * @param subject 科目オブジェクト
+     * @param subjectCd 科目コード (String型) ★★★ ここを修正 ★★★
      * @param schoolCd 学校コード
      * @return TestListSubjectのリスト
      * @throws Exception
      */
-    public List<TestListSubject> filterBySubject(int entYear, String classNum, Subject subject, String schoolCd) throws Exception {
+    public List<TestListSubject> filterBySubject(int entYear, String classNum, String subjectCd, String schoolCd) throws Exception {
         List<TestListSubject> list = new ArrayList<>();
         String sql = "SELECT s.ENT_YEAR, s.NO AS student_no, s.NAME AS student_name, s.CLASS_NUM, t.NO AS test_no, t.POINT "
                    + "FROM STUDENT s "
@@ -34,14 +33,13 @@ public class TestListStudentDAO extends DAO {
         try (Connection con = getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
-            st.setString(1, subject.getCd());
+            st.setString(1, subjectCd); // SQLの1番目の?に科目コードをセット
             st.setString(2, schoolCd);
             st.setInt(3, entYear);
             st.setString(4, classNum);
             st.setString(5, schoolCd);
 
             try (ResultSet rs = st.executeQuery()) {
-                // 学生ごとに点数をまとめるためのMap
                 Map<String, TestListSubject> map = new HashMap<>();
 
                 while (rs.next()) {
@@ -60,19 +58,16 @@ public class TestListStudentDAO extends DAO {
                         map.put(studentNo, tls);
                     }
 
-                    // 点数をMapに追加
                     tls.getPoints().put(rs.getInt("test_no"), rs.getInt("POINT"));
                 }
-                // Mapの値をリストに変換
                 list.addAll(map.values());
             }
         }
         return list;
     }
 
-    /**
-     * 学生番号で成績を検索します。
-     */
+    // filterByStudentメソッドは変更なし
+    // ...
     public List<TestListStudent> filterByStudent(String studentNo) throws Exception {
         List<TestListStudent> list = new ArrayList<>();
         String sql =

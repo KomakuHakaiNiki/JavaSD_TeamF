@@ -20,7 +20,6 @@ import dao.StudentDAO;
 import dao.SubjectDAO;
 import dao.TestListStudentDAO;
 
-// URLパターンは /grade/search のまま
 @WebServlet("/grade/search")
 public class GradeSearchServlet extends HttpServlet {
 
@@ -85,12 +84,10 @@ public class GradeSearchServlet extends HttpServlet {
         String classNum = req.getParameter("f2");
         String subjectCd = req.getParameter("f3");
 
-        Subject subject = new Subject();
-        subject.setCd(subjectCd);
-
         TestListStudentDAO dao = new TestListStudentDAO();
         try {
-            List<TestListSubject> results = dao.filterBySubject(entYear, classNum, subject, user.getSchool().getCd());
+            // DAOには科目コード(String)を渡す
+            List<TestListSubject> results = dao.filterBySubject(entYear, classNum, subjectCd, user.getSchool().getCd());
             req.setAttribute("results_subject", results);
             req.setAttribute("searched_subject", subjectCd); // 検索条件を保持
         } catch (Exception e) {

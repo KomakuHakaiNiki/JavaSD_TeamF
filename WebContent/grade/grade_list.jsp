@@ -65,14 +65,22 @@
                             <thead><tr><th>入学年度</th><th>クラス</th><th>学生番号</th><th>氏名</th><th>1回</th><th>2回</th></tr></thead>
                             <tbody>
                                 <c:forEach var="r" items="${results_subject}">
-                                    <tr><td>${r.entYear}</td><td>${r.classNum}</td><td>${r.studentNo}</td><td>${r.studentName}</td><td>${r.points[1]}</td><td>${r.points[2]}</td></tr>
+                                    <tr>
+                                        <td>${r.entYear}</td>
+                                        <td>${r.classNum}</td>
+                                        <td>${r.studentNo}</td>
+                                        <td>${r.studentName}</td>
+                                        <%-- ★★★ ここを修正 ★★★ --%>
+                                        <td><c:out value="${r.points[1]}" /></td>
+                                        <td><c:out value="${r.points[2]}" /></td>
+                                    </tr>
                                 </c:forEach>
                             </tbody>
                         </table>
                     </div>
                 </c:if>
 
-                <%-- 学生検索の結果表示 --%>
+                 <%-- 学生検索の結果表示 --%>
                  <c:if test="${not empty results_student}">
                     <div class="results-area">
                         <h4>${student.name} 成績一覧</h4>
