@@ -28,7 +28,7 @@ public class LogoutServlet extends HttpServlet {
         }
 
         // ログインページにフォワードする
-        req.getRequestDispatcher("/login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/logout.jsp").forward(req, resp);
     }
 
     @Override
