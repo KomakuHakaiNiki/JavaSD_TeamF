@@ -19,6 +19,7 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <main class="main-content">
         <div class="regist-area">
             <div class="title-row">成績管理</div>
@@ -50,6 +51,13 @@
                         <div class="col-sm-auto"><button type="submit" class="btn btn-secondary">検索</button></div>
                     </div>
                 </form>
+=======
+<%--成績登録の『成績登録』 --%>
+
+<div class="main-area">
+    <!-- タイトル -->
+    <div class="main-title-row">成績管理</div>
+>>>>>>> branch 'master' of https://github.com/KomakuHakaiNiki/JavaSD_TeamF.git
 
                 <c:if test="${not empty results}">
                     <hr>
