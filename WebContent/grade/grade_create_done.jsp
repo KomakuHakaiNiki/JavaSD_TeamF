@@ -22,8 +22,8 @@
             <div class="title-row">成績管理</div>
             <div class="done-body">
                 <div class="done-message">登録が完了しました</div>
-                <a href="create" class="btn btn-secondary">続けて登録する</a>
-                <a href="../top.jsp" class="btn btn-primary">メニューへ</a>
+                <a href="create" class="btn btn-secondary">戻る</a>
+                <a href="search" class="btn btn-primary">成績参照</a>
             </div>
         </div>
     </main>
