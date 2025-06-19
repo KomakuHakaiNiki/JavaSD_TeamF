@@ -136,7 +136,7 @@
                         </table>
 
                         <div class="text-start mt-3">
-                            <button type="submit" class="btn btn-primary">登録</button>
+                            <button type="submit" class="btn btn-primary">登録して終了</button>
                         </div>
                     </form>
                 </c:if>
