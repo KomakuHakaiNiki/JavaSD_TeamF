@@ -57,7 +57,7 @@ public class TestDAO extends DAO {
     }
 
     /**
-     * ★★★ このメソッドがエラーの原因です ★★★
+     *
      * 複数の成績データをまとめて登録または更新します (Upsert)。
      * トランザクション処理を行い、すべてのデータが成功するか、すべて失敗するかのどちらかになります。
      * @param list 登録または更新するTestオブジェクトのリスト
@@ -120,4 +120,19 @@ public class TestDAO extends DAO {
             }
         }
     }
+
+    public boolean delete(String studentNo, String subjectCd, int num, String schoolCd) throws Exception {
+        String sql = "DELETE FROM TEST WHERE STUDENT_NO = ? AND SUBJECT_CD = ? AND NO = ? AND SCHOOL_CD = ?";
+        try (Connection con = getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, studentNo);
+            st.setString(2, subjectCd);
+            st.setInt(3, num);
+            st.setString(4, schoolCd);
+            return st.executeUpdate() > 0;
+        }
+    }
+
+
+
 }

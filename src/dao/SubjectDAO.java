@@ -42,7 +42,7 @@ public class SubjectDAO extends DAO {
     }
 
     /**
-     * ★★★ このメソッドが今回の問題の原因です ★★★
+     *
      * 主キー（学校コード、科目コード）で科目を1件取得します。
      * @param schoolCd 学校コード
      * @param cd 科目コード

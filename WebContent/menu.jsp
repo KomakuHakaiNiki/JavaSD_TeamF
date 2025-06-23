@@ -71,6 +71,7 @@
                 <div class="menu-nav-title">成績管理</div>
                 <ul class="sub-menu">
                     <li><a href="<%=request.getContextPath()%>/grade/create">成績登録</a></li>
+                    <li><a href="<%=request.getContextPath()%>/grade/delete">成績削除</a></li>
                     <li><a href="<%=request.getContextPath()%>/grade/search">成績参照</a></li>
                 </ul>
             </li>

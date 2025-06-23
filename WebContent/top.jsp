@@ -82,6 +82,7 @@
             <div class="menu-box grade">
                 <div class="menu-title-box">成績管理</div>
                 <a class="menu-link" href="<%=request.getContextPath()%>/grade/create">成績登録</a>
+                <a class="menu-link" href="<%=request.getContextPath()%>/grade/delete">成績削除</a>
                 <a class="menu-link" href="<%=request.getContextPath()%>/grade/search">成績参照</a>
             </div>
             <div class="menu-box subject">
