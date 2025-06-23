@@ -1,4 +1,3 @@
-// FILE: JavaSD/src/servlet/student/StudentListServlet.java
 package student;
 
 import java.io.IOException;
@@ -23,55 +22,53 @@ public class StudentListServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
 
-        // ログインチェック
-        if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-        // 学校情報チェック
-        if (user.getSchool() == null || user.getSchool().getCd() == null) {
-            req.setAttribute("error", "セッションにユーザーの学校情報が見つかりません。再ログインしてください。");
-            req.getRequestDispatcher("/student/student_list.jsp").forward(req, resp);
-            return;
-        }
+        // ログイン／学校チェックは省略…
 
-        StudentDAO studentDao = new StudentDAO();
+        // パラメータ取得
+        String entYearStr  = req.getParameter("entYear");
+        String classNum    = req.getParameter("classNum");
+        String attendParam = req.getParameter("attend");
+        // attendParam が null のときは絞り込みなし
+        Boolean attend = (attendParam != null) ? Boolean.TRUE : null;
 
-        // 絞り込み条件をリクエストから取得
-        String entYearStr = req.getParameter("entYear");
-        String classNum = req.getParameter("classNum");
-        String schoolCd = user.getSchool().getCd(); // ★セッションから学校コードを取得
-
+        // entYear を int に変換。空文字またはエラー時は 0 と見做す
         int entYear = 0;
         if (entYearStr != null && !entYearStr.isEmpty()) {
             try {
                 entYear = Integer.parseInt(entYearStr);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                entYear = 0;
             }
         }
 
+        String schoolCd = user.getSchool().getCd();
+        StudentDAO dao = new StudentDAO();
+
         try {
-            // ★★★★★ ここが修正点 ★★★★★
-            // filterメソッドに3つの引数（入学年度、クラス番号、学校コード）を渡す
-            List<Student> studentList = studentDao.filter(entYear, classNum, schoolCd);
+            // DAO へ引数を渡して絞込検索
+            List<Student> studentList   = dao.filter(entYear, classNum, attend, schoolCd);
+            // プルダウン用リスト取得（学校コードを渡す）
+            List<Integer> entYearList   = dao.getEntYears(schoolCd);
+            List<String>  classNumList  = dao.getClassNums(schoolCd);
 
-            // プルダウン用のリストも取得
-            List<Integer> entYearList = studentDao.getEntYears();
-            List<String> classNumList = studentDao.getClassNums();
-
-            // JSPにデータをセット
-            req.setAttribute("studentList", studentList);
-            req.setAttribute("entYearList", entYearList);
-            req.setAttribute("classNumList", classNumList);
-
+            // リクエスト属性にセット
+            req.setAttribute("studentList",      studentList);
+            req.setAttribute("entYearList",      entYearList);
+            req.setAttribute("classNumList",     classNumList);
+            req.setAttribute("selectedEntYear",  (entYear > 0 ? entYear : null));
+            req.setAttribute("selectedClassNum", classNum);
+            req.setAttribute("selectedAttend",   attend);
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "データの取得中にエラーが発生しました。");
         }
 
-        // JSPページにフォワード
-        req.getRequestDispatcher("/student/student_list.jsp").forward(req, resp);
+        // コンテキストパスを JSP で使うため属性にセット
+        req.setAttribute("ctx", req.getContextPath());
+
+        // パターンB: forward() をチェーンせずに単独で呼び出す
+        req.getRequestDispatcher("/student/student_list.jsp")
+           .forward(req, resp);
     }
 
     @Override

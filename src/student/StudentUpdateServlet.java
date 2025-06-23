@@ -17,71 +17,80 @@ import dao.StudentDAO;
 
 @WebServlet("/student/update")
 public class StudentUpdateServlet extends HttpServlet {
-
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         HttpSession session = req.getSession();
-        if (session.getAttribute("user") == null) {
+        Teacher user = (Teacher) session.getAttribute("user");
+        if (user == null || user.getSchool() == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
         String no = req.getParameter("no");
+        String schoolCd = user.getSchool().getCd();
         StudentDAO dao = new StudentDAO();
         try {
+            // 学生情報取得
             Student student = dao.getStudentById(no);
-            List<String> classNums = dao.getClassNums();
-            req.setAttribute("student", student);
-            req.setAttribute("classNumList", classNums);
-            req.getRequestDispatcher("/student/student_edit.jsp").forward(req, resp);
+            // プルダウン用リスト取得 (学校コード指定)
+            List<Integer> entYearList  = dao.getEntYears(schoolCd);
+            List<String>  classNumList = dao.getClassNums(schoolCd);
+
+            req.setAttribute("student",       student);
+            req.setAttribute("entYearList",   entYearList);
+            req.setAttribute("classNumList",  classNumList);
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "学生情報の取得中にエラーが発生しました。");
-            req.getRequestDispatcher("list").forward(req, resp);
+            req.setAttribute("error", "学生情報の取得に失敗しました。");
         }
+
+        // 編集画面へフォワード
+        req.getRequestDispatcher("/student/student_edit.jsp")
+           .forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
-        if (user == null) {
+        if (user == null || user.getSchool() == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
-        String no = req.getParameter("no");
-        String name = req.getParameter("name");
-        int entYear = Integer.parseInt(req.getParameter("entYear"));
+        String no       = req.getParameter("no");
+        String name     = req.getParameter("name");
+        int entYear     = Integer.parseInt(req.getParameter("entYear"));
         String classNum = req.getParameter("classNum");
-        boolean isAttend = req.getParameter("isAttend") != null;
+        boolean attend  = req.getParameter("isAttend") != null;
 
         Student student = new Student();
         student.setNo(no);
         student.setName(name);
         student.setEntyear(entYear);
         student.setClassNum(classNum);
-        student.setAttend(isAttend);
+        student.setAttend(attend);
         student.setSchool(user.getSchool());
 
         StudentDAO dao = new StudentDAO();
         try {
             dao.updateStudent(student);
+            resp.sendRedirect(req.getContextPath() + "/student/list");
+            return;
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "学生情報の更新に失敗しました。");
-            req.setAttribute("student", student);
+            // 再度プルダウン用リストを用意
             try {
-                 List<String> classNums = dao.getClassNums();
-                 req.setAttribute("classNumList", classNums);
-            } catch (Exception e2) {
-                 e2.printStackTrace();
-            }
+                req.setAttribute("entYearList",  dao.getEntYears(user.getSchool().getCd()));
+                req.setAttribute("classNumList", dao.getClassNums(user.getSchool().getCd()));
+            } catch (Exception ignore) {}
+            req.setAttribute("student", student);
             req.getRequestDispatcher("/student/student_edit.jsp").forward(req, resp);
-            return;
         }
-
-        req.getRequestDispatcher("/student/student_edit_done.jsp").forward(req, resp);
     }
 }
+

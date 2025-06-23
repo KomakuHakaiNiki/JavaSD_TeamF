@@ -1,3 +1,4 @@
+// FILE: JavaSD/src/servlet/grade/GradeSearchServlet.java
 package grade;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import bean.School;  // ← import 追加
+import bean.School;
 import bean.Student;
 import bean.Subject;
 import bean.Teacher;
@@ -32,7 +33,7 @@ public class GradeSearchServlet extends HttpServlet {
         if (user == null || user.getSchool() == null) {
             Teacher dummy = new Teacher();
             School school = new School();
-            school.setCd("S001"); // H2に登録済みの学校コード
+            school.setCd("tes"); // H2に登録済みの学校コード
             dummy.setSchool(school);
             session.setAttribute("user", dummy);
             user = dummy;
@@ -41,12 +42,13 @@ public class GradeSearchServlet extends HttpServlet {
         StudentDAO sDao = new StudentDAO();
         SubjectDAO subDao = new SubjectDAO();
         try {
-            List<Integer> entYears = sDao.getEntYears();
-            List<String> classNums = sDao.getClassNums();
-            List<Subject> subjects = subDao.filterBySchool(user.getSchool().getCd());
-            req.setAttribute("ent_years", entYears);
-            req.setAttribute("class_nums", classNums);
-            req.setAttribute("subjects", subjects);
+            String schoolCd = user.getSchool().getCd();
+            List<Integer> entYears = sDao.getEntYears(schoolCd);
+            List<String>  classNums = sDao.getClassNums(schoolCd);
+            List<Subject> subjects  = subDao.filterBySchool(schoolCd);
+            req.setAttribute("ent_years",   entYears);
+            req.setAttribute("class_nums",   classNums);
+            req.setAttribute("subjects",     subjects);
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "表示に必要な情報の取得に失敗しました。");
@@ -71,18 +73,19 @@ public class GradeSearchServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
         int entYear = Integer.parseInt(req.getParameter("f1"));
-        String classNum = req.getParameter("f2");
-        String subjectCd = req.getParameter("f3");
+        String classNum   = req.getParameter("f2");
+        String subjectCd  = req.getParameter("f3");
+        String schoolCd   = user.getSchool().getCd();
 
         TestListStudentDAO dao = new TestListStudentDAO();
         try {
-            List<TestListSubject> results = dao.filterBySubject(entYear, classNum, subjectCd, user.getSchool().getCd());
+            List<TestListSubject> results = dao.filterBySubject(entYear, classNum, subjectCd, schoolCd);
             req.setAttribute("results_subject", results);
             req.setAttribute("searched_subject", subjectCd);
             // 科目名取得
             SubjectDAO sd = new SubjectDAO();
             String name = subjectCd;
-            for (Subject s : sd.filterBySchool(user.getSchool().getCd())) {
+            for (Subject s : sd.filterBySchool(schoolCd)) {
                 if (subjectCd.equals(s.getCd())) { name = s.getName(); break; }
             }
             req.setAttribute("searched_subject_name", name);
