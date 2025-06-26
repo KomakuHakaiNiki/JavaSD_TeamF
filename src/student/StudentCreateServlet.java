@@ -88,7 +88,7 @@ public class StudentCreateServlet extends HttpServlet {
         StudentDAO dao = new StudentDAO();
         try {
             dao.insertStudent(student);
-            resp.sendRedirect(req.getContextPath() + "/student/list");
+            resp.sendRedirect(req.getContextPath() + "/student/student_create_done.jsp");
             return;
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class StudentCreateServlet extends HttpServlet {
                 req.setAttribute("entYearList",  dao.getEntYears(schoolCd));
                 req.setAttribute("classNumList", dao.getClassNums(schoolCd));
             } catch (Exception ignore) {}
-            req.getRequestDispatcher("/student/student_create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/student/student_create_done.jsp").forward(req, resp);
         }
     }
 }
