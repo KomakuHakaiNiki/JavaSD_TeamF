@@ -78,7 +78,7 @@ public class StudentUpdateServlet extends HttpServlet {
         StudentDAO dao = new StudentDAO();
         try {
             dao.updateStudent(student);
-            resp.sendRedirect(req.getContextPath() + "/student/list");
+            resp.sendRedirect(req.getContextPath() + "/student/student_edit_done.jsp");
             return;
         } catch (Exception e) {
             e.printStackTrace();
