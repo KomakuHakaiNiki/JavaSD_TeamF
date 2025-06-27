@@ -19,41 +19,50 @@
 
     <%@ include file="/menu.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        .main-content { padding: 30px; width: 100%; box-sizing: border-box; }
-        .done-area { max-width: 700px; margin: 0 auto; }
-        .main-title-row {
-            background-color: #f8f9fa; border: 1px solid #dee2e6; border-bottom: none;
-            border-radius: 8px 8px 0 0; padding: 14px 25px;
-            font-weight: bold; font-size: 1.18em;
+        .main-content {
+            padding: 30px;
+            box-sizing: border-box;
         }
-        .done-body {
-            background: #fff; border-radius: 0 0 12px 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #dee2e6; padding: 40px; text-align: center;
+        h2 {
+            font-size: 1.2em;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
         }
         .done-message {
-            background-color: #e8f5e9; color: #2e7d32;
-            padding: 15px 25px; border-radius: 5px; font-size: 1.1em;
-            border: 1px solid #c8e6c9; margin-bottom: 30px;
+            background-color: #d1e7dd;
+            color: #0f5132;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            margin-bottom: 6.5rem; 
+        }
+        .action-link {
+            font-size: 1em;
+            /* ★★★ 修正箇所 ★★★ */
+            /* リンク同士の間隔を広げるために、右側の余白を大きくします */
+            margin-right: 4rem; 
         }
     </style>
 </head>
 <body>
-    <main class="main-content">
-        <div class="done-area">
-            <div class="main-title-row">
-                <span>学生情報登録</span>
-            </div>
-            <div class="done-body">
-                <div class="done-message">
-                    登録が完了しました
-                </div>
-                <a href="list" class="btn btn-primary">学生一覧へ</a>
-                <a href="create" class="btn btn-link text-secondary">続けて登録する</a>
-            </div>
+    <%-- menu.jspがここに展開されます --%>
+
+    <main class="main-content flex-grow-1">
+        
+        <h2>学生情報登録</h2>
+
+        <div class="done-message">
+            登録が完了しました
         </div>
+
+        <a href="create" class="action-link">戻る</a>
+        <a href="list" class="action-link">学生一覧</a>
+
     </main>
-    </div>
 </body>
 </html>
