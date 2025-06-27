@@ -59,16 +59,16 @@
       <table class="table table-hover align-middle">
         <thead>
           <tr>
-            <th>入学年度</th><th>クラス</th><th>学生番号</th><th>氏名</th><th>在学中</th><th>操作</th>
+            <th>入学年度</th><th>学生番号</th><th>氏名</th><th>クラス</th><th>在学中</th><th>操作</th>
           </tr>
         </thead>
         <tbody>
           <c:forEach var="s" items="${studentList}">
             <tr>
               <td>${s.entyear}</td>
-              <td>${s.classNum}</td>
               <td>${s.no}</td>
               <td>${s.name}</td>
+              <td>${s.classNum}</td>
               <td><c:choose>
                     <c:when test="${s.attend}">○</c:when>
                     <c:otherwise>×</c:otherwise>
