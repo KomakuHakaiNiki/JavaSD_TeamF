@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"    prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
@@ -10,10 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         rel="stylesheet">
   <style>
-    /* ページ全体の余白 */
     .main-content { padding: 30px; width:100%; box-sizing:border-box; }
-    /* カードのタイトルバー */
-    .title-row {
+    .title-row { /* カードのタイトルバー */
       background: #f8f9fa;
       border: 1px solid #dee2e6;
       border-bottom: none;
@@ -21,7 +19,6 @@
       padding: 14px 25px;
       font-weight: bold;
     }
-    /* カード本文 */
     .form-body {
       background: #fff;
       border-radius: 0 0 12px 12px;
@@ -36,6 +33,7 @@
 <main class="main-content">
 
   <div class="card mb-4">
+    <!-- タイトル -->
     <div class="title-row">成績参照</div>
     <div class="form-body">
 
@@ -47,18 +45,7 @@
         <div class="alert alert-info">${info}</div>
       </c:if>
 
-      <!-- 科目情報：全てデフォルトのまま検索したときのエラー -->
-      <c:if test="
-            ${param.search_type=='subject'
-              and empty param.f1
-              and empty param.f2
-              and empty param.f3}">
-        <div class="alert alert-danger mb-4">
-          入学年度とクラスと科目を入力してください
-        </div>
-      </c:if>
-
-      <!-- ■ 科目情報 検索フォーム -->
+      <!-- ■ 科目情報検索 -->
       <p class="fw-bold">科目情報</p>
       <form method="post" action="search" class="mb-4">
         <input type="hidden" name="search_type" value="subject"/>
@@ -105,9 +92,8 @@
         </div>
       </form>
 
+      <!-- ■ 学生情報検索 -->
       <hr/>
-
-      <!-- ■ 学生情報 検索フォーム -->
       <p class="fw-bold">学生情報</p>
       <form method="post" action="search">
         <input type="hidden" name="search_type" value="student"/>
@@ -127,11 +113,10 @@
         </div>
       </form>
 
-      <!-- 学生検索：存在しない番号 -->
-      <c:if test="
-            ${param.search_type=='student'
-              and empty results_student
-              and not empty param.f4}">
+      <!-- 学生検索でヒットなし -->
+      <c:if test="${param.search_type=='student'
+                 and empty results_student
+                 and not empty param.f4}">
         <div class="alert alert-warning mt-4">
           成績情報が存在しませんでした
         </div>

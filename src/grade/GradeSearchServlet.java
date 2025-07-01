@@ -1,4 +1,3 @@
-// FILE: JavaSD/src/servlet/grade/GradeSearchServlet.java
 package grade;
 
 import java.io.IOException;
@@ -26,8 +25,7 @@ public class GradeSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 初期表示用。プルダウンに必要な「年度／クラス／科目リスト」をセットして
-     * grade_list.jsp を表示します。
+     * 初期表示：プルダウン用データをセットして grade_list.jsp を表示
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -45,13 +43,11 @@ public class GradeSearchServlet extends HttpServlet {
             user = dummy;
         }
 
-        StudentDAO sDao = new StudentDAO();
-        SubjectDAO subDao = new SubjectDAO();
         try {
             String schoolCd = user.getSchool().getCd();
-            List<Integer> entYears  = sDao.getEntYears(schoolCd);
-            List<String>  classNums = sDao.getClassNums(schoolCd);
-            List<Subject> subjects  = subDao.filterBySchool(schoolCd);
+            List<Integer> entYears  = new StudentDAO().getEntYears(schoolCd);
+            List<String>  classNums = new StudentDAO().getClassNums(schoolCd);
+            List<Subject> subjects  = new SubjectDAO().filterBySchool(schoolCd);
 
             req.setAttribute("ent_years",  entYears);
             req.setAttribute("class_nums", classNums);
@@ -64,7 +60,7 @@ public class GradeSearchServlet extends HttpServlet {
     }
 
     /**
-     * form の submit (POST) を受けて、search_type に応じて処理を振り分けます。
+     * POST の振り分け
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -77,34 +73,32 @@ public class GradeSearchServlet extends HttpServlet {
         } else if ("student".equals(type)) {
             searchByStudent(req, resp);
         } else {
-            // 想定外は初期表示へ
             doGet(req, resp);
         }
     }
 
     /**
-     * 科目情報による絞り込み検索処理。
-     * まず f1／f2／f3 のいずれかが空ならエラーメッセージをセットして doGet へ戻る。
+     * ■ 科目情報での検索
+     * f1/f2/f3 のいずれかが空 → エラー
+     * DAO実行後、ヒットなしなら info をセット
      */
     private void searchBySubject(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // ① まずパラメータを取得
         String f1 = req.getParameter("f1");  // 入学年度
         String f2 = req.getParameter("f2");  // クラス
         String f3 = req.getParameter("f3");  // 科目コード
 
-        // ② いずれかが空ならエラー
+        // 未選択チェック
         if (f1 == null || f1.trim().isEmpty()
          || f2 == null || f2.trim().isEmpty()
          || f3 == null || f3.trim().isEmpty()) {
             req.setAttribute("error", "入学年度とクラスと科目を入力してください。");
-            // 初期表示用情報を再セットして doGet へ戻す
             doGet(req, resp);
             return;
         }
 
-        // ③ 空でないことが保証されたので、parse や DAO 呼び出しへ
+        // parse & DAO
         HttpSession session = req.getSession();
         Teacher user = (Teacher) session.getAttribute("user");
         String schoolCd = user.getSchool().getCd();
@@ -121,18 +115,21 @@ public class GradeSearchServlet extends HttpServlet {
         String subjectCd = f3.trim();
 
         try {
-            TestListStudentDAO dao = new TestListStudentDAO();
-            List<TestListSubject> results =
-                dao.filterBySubject(entYear, classNum, subjectCd, schoolCd);
-
+            List<TestListSubject> results = new TestListStudentDAO()
+                .filterBySubject(entYear, classNum, subjectCd, schoolCd);
             req.setAttribute("results_subject", results);
 
-            // 科目コード→科目名の変換
-            SubjectDAO sd = new SubjectDAO();
+            // ヒットなし時のメッセージ
+            if (results.isEmpty()) {
+                req.setAttribute("info", "成績情報が存在しませんでした。");
+            }
+
+            // 科目名の取得
             String name = subjectCd;
-            for (Subject s : sd.filterBySchool(schoolCd)) {
+            for (Subject s : new SubjectDAO().filterBySchool(schoolCd)) {
                 if (subjectCd.equals(s.getCd())) {
-                    name = s.getName(); break;
+                    name = s.getName();
+                    break;
                 }
             }
             req.setAttribute("searched_subject_name", name);
@@ -142,13 +139,14 @@ public class GradeSearchServlet extends HttpServlet {
             req.setAttribute("error", "成績の検索中にエラーが発生しました。");
         }
 
-        // 結果表示も新たにプルダウン情報を用意して表示
+        // プルダウンを再セットして結果表示
         doGet(req, resp);
     }
 
     /**
-     * 学生番号による絞り込み検索処理。
-     * f4 が空ならエラー、DAO実行後に結果をセットして再表示します。
+     * ■ 学生番号での検索
+     * f4 が空 → エラー
+     * DAO実行後、ヒットなしなら info をセット
      */
     private void searchByStudent(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -162,13 +160,9 @@ public class GradeSearchServlet extends HttpServlet {
         }
 
         try {
-            StudentDAO sDao = new StudentDAO();
-            TestListStudentDAO tDao = new TestListStudentDAO();
-
-            // 学生オブジェクト取得
-            Student student = sDao.getStudentById(f4.trim());
-            // 成績リスト取得
-            List<TestListStudent> results = tDao.filterByStudent(f4.trim());
+            Student student = new StudentDAO().getStudentById(f4.trim());
+            List<TestListStudent> results = new TestListStudentDAO()
+                .filterByStudent(f4.trim());
 
             req.setAttribute("student", student);
             req.setAttribute("results_student", results);
