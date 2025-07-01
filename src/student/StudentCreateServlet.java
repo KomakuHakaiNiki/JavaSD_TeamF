@@ -69,7 +69,7 @@ public class StudentCreateServlet extends HttpServlet {
 
         StudentDAO dao = new StudentDAO();
 
-        // ■ バリデーション
+        // ■ 基本バリデーション
         if (no == null || no.trim().isEmpty() ||
             name == null || name.trim().isEmpty()) {
             req.setAttribute("error", "学籍番号と氏名は必須入力です。");
@@ -87,6 +87,36 @@ public class StudentCreateServlet extends HttpServlet {
             entYear = Integer.parseInt(entYearStr.trim());
         } catch (NumberFormatException e) {
             req.setAttribute("error", "入学年度は半角数字で入力してください。");
+            doGet(req, resp);
+            return;
+        }
+
+        // ■ 重複チェック：入学年度
+        try {
+            List<Integer> existingYears = dao.getEntYears(schoolCd);
+            if (existingYears.contains(entYear)) {
+                req.setAttribute("error", "この数値はすでに存在しています");
+                doGet(req, resp);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("error", "入学年度のチェック中にエラーが発生しました。");
+            doGet(req, resp);
+            return;
+        }
+
+        // ■ 重複チェック：クラス
+        try {
+            List<String> existingClasses = dao.getClassNums(schoolCd);
+            if (existingClasses.contains(classNum)) {
+                req.setAttribute("error", "この数値はすでに存在しています");
+                doGet(req, resp);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("error", "クラスのチェック中にエラーが発生しました。");
             doGet(req, resp);
             return;
         }
@@ -112,7 +142,7 @@ public class StudentCreateServlet extends HttpServlet {
                 : "データベースエラー: 学生の登録に失敗しました。";
             req.setAttribute("error", msg);
 
-            // 例外時もプルダウン再取得
+            // 再度プルダウン用リストをセット
             try {
                 req.setAttribute("entYearList",  dao.getEntYears(schoolCd));
                 req.setAttribute("classNumList", dao.getClassNums(schoolCd));

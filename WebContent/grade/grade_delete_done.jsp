@@ -1,7 +1,5 @@
-<%-- FILE: WebContent/grade/grade_delete_done.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <%-- セキュリティチェック --%>
 <%
     if (session.getAttribute("user") == null) {
@@ -9,57 +7,61 @@
         return;
     }
 %>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>成績削除完了 | 得点管理システム</title>
-    <%@ include file="/menu.jsp" %>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .main-content {
-            padding: 30px;
-            box-sizing: border-box;
-        }
-        h2 {
-            font-size: 1.2em;
-            font-weight: bold;
-            background-color: #f8f9fa;
-            padding: 0.75rem 1.25rem;
-            border: 1px solid #dee2e6;
-            margin-bottom: 1.5rem;
-        }
-        .done-message {
-            background-color: #d1e7dd;
-            color: #0f5132;
-            padding: 1rem;
-            border: 1px solid #dee2e6;
-            text-align: center;
-            margin-bottom: 6.5rem;
-        }
-        .action-link {
-            font-size: 1em;
-            margin-right: 4rem; /* リンク同士の間隔 */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>成績削除完了 | 得点管理システム</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <style>
+    .layout-container { display: flex; }
+    .main-content {
+      padding: 30px;
+      flex-grow: 1;
+      box-sizing: border-box;
+    }
+    h2 {
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #f8f9fa;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid #dee2e6;
+      margin-bottom: 1.5rem;
+    }
+    .done-message {
+      background: #d1e7dd;
+      color: #0f5132;
+      padding: 1rem;
+      border: 1px solid #dee2e6;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .action-link { margin-right: 2rem; }
+  </style>
 </head>
 <body>
-    <%-- menu.jspがここに展開されます --%>
 
-    <main class="main-content flex-grow-1">
+  <%-- 共通ヘッダー --%>
+  <%@ include file="/header.jsp" %>
 
-        <h2>成績削除</h2>
+  <div class="layout-container">
+    <%-- サイドバー --%>
+    <%@ include file="/menu.jsp" %>
 
-        <div class="done-message">
-            削除が完了しました
-        </div>
+    <%-- メイン --%>
+    <main class="main-content">
+      <h2>成績削除完了</h2>
 
-        <a href="search" class="action-link">成績参照</a>
+      <div class="done-message">
+        削除が完了しました
+      </div>
 
+      <a href="search" class="action-link">成績参照</a>
     </main>
+  </div>
 
-    <%-- 新しいレイアウトでは不要なため、以前の閉じタグ</div>は削除しました --%>
+  <%-- 共通フッター --%>
+  <%@ include file="/footer.jsp" %>
 </body>
 </html>

@@ -16,9 +16,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>科目削除確認 | 得点管理システム</title>
-
-    <%@ include file="/menu.jsp" %>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
     <style>
         .main-content { padding: 30px; width: 100%; box-sizing: border-box; }
         .confirm-area { max-width: 700px; margin: 0 auto; }
@@ -38,39 +37,46 @@
             border: 1px solid #ffde7a; margin-bottom: 30px;
         }
         .confirm-item {
-             margin-bottom: 1rem;
-             font-size: 1.1em;
+            margin-bottom: 1rem;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <main class="main-content">
-        <div class="confirm-area">
-            <div class="main-title-row">
-                <span>科目削除確認</span>
-            </div>
-            <div class="confirm-body">
-                <div class="confirm-message">
-                    以下の科目を削除します。よろしいですか？
-                </div>
 
-                <div class="confirm-item">
-                    <strong>科目コード:</strong> <c:out value="${subject.cd}" />
-                </div>
-                <div class="confirm-item">
-                    <strong>科目名:</strong> <c:out value="${subject.name}" />
-                </div>
+  <%-- 共通ヘッダー --%>
+  <%@ include file="/header.jsp" %>
 
-                <form method="post" action="delete" class="mt-4">
-                    <%-- 削除対象の科目コードをサーブレットに送信 --%>
-                    <input type="hidden" name="cd" value="<c:out value='${subject.cd}'/>">
-
-                    <button type="submit" class="btn btn-danger">削除</button>
-                    <a href="list" class="btn btn-secondary">キャンセル</a>
-                </form>
-            </div>
+  <main class="main-content">
+    <div class="confirm-area">
+      <div class="main-title-row">
+        <span>科目削除確認</span>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-message">
+          以下の科目を削除します。よろしいですか？
         </div>
-    </main>
+
+        <div class="confirm-item">
+          <strong>科目コード:</strong> <c:out value="${subject.cd}" />
+        </div>
+        <div class="confirm-item">
+          <strong>科目名:</strong> <c:out value="${subject.name}" />
+        </div>
+
+        <form method="post" action="delete" class="mt-4">
+          <%-- 削除対象の科目コードをサーブレットに送信 --%>
+          <input type="hidden" name="cd" value="<c:out value='${subject.cd}'/>">
+
+          <button type="submit" class="btn btn-danger">削除</button>
+          <a href="list" class="btn btn-secondary">キャンセル</a>
+        </form>
+      </div>
     </div>
+  </main>
+
+  <%-- 共通フッター --%>
+  <%@ include file="/footer.jsp" %>
+
 </body>
 </html>

@@ -16,52 +16,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>科目削除完了 | 得点管理システム</title>
-
-    <%@ include file="/menu.jsp" %>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
     <style>
-        .main-content {
-            padding: 30px;
-            box-sizing: border-box;
-        }
+        .main-content { padding: 30px; box-sizing: border-box; max-width: 600px; margin: 0 auto; }
         h2 {
-            font-size: 1.2em;
-            font-weight: bold;
-            background-color: #f8f9fa;
-            padding: 0.75rem 1.25rem;
-            border: 1px solid #dee2e6;
-            margin-bottom: 1.5rem;
+            font-size: 1.2em; font-weight: bold;
+            background-color: #f8f9fa; padding: 0.75rem 1.25rem;
+            border: 1px solid #dee2e6; margin-bottom: 1.5rem;
+            text-align: center;
         }
         .done-message {
-            background-color: #d1e7dd;
-            color: #0f5132;
-            padding: 1rem;
-            border: 1px solid #dee2e6;
-            text-align: center;
-            margin-bottom: 6.5rem;
+            background-color: #d1e7dd; color: #0f5132;
+            padding: 1rem; border: 1px solid #dee2e6;
+            text-align: center; margin-bottom: 2rem;
         }
         .action-link {
-            font-size: 1em;
-            margin-right: 4rem; /* リンク同士の間隔 */
+            display: inline-block; margin-right: 2rem;
+            color: #0d6efd; text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <%-- menu.jspがここに展開されます --%>
 
-    <main class="main-content flex-grow-1">
-        
-        <h2>科目情報削除</h2>
+  <%-- 共通ヘッダー --%>
+  <%@ include file="/header.jsp" %>
 
-        <div class="done-message">
-            削除が完了しました
-        </div>
+  <main class="main-content">
+    <h2>科目情報削除</h2>
 
-        <a href="list" class="action-link">科目一覧</a>
+    <div class="done-message">
+      削除が完了しました
+    </div>
 
-    </main>
+    <a href="list" class="action-link">科目一覧へ戻る</a>
+  </main>
 
-    <%-- 新しいレイアウトでは不要なため、以前の閉じタグ</div>は削除しました --%>
+  <%-- 共通フッター --%>
+  <%@ include file="/footer.jsp" %>
+
 </body>
 </html>
