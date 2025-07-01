@@ -26,7 +26,7 @@
       <div class="col-auto">
         <label class="form-label">入学年度</label>
         <select name="entYear" class="form-select">
-          <option value="">───</option>
+          <option value="">ｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰ</option>
           <c:forEach var="y" items="${entYearList}">
             <option value="${y}" <c:if test="${y eq selectedEntYear}">selected</c:if>>${y}</option>
           </c:forEach>
@@ -36,7 +36,7 @@
       <div class="col-auto">
         <label class="form-label">クラス</label>
         <select name="classNum" class="form-select">
-          <option value="">───</option>
+          <option value="">ｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰｰ</option>
           <c:forEach var="c" items="${classNumList}">
             <option value="${c}" <c:if test="${c eq selectedClassNum}">selected</c:if>>${c}</option>
           </c:forEach>
