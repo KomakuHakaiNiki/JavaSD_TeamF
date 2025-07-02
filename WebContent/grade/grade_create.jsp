@@ -64,13 +64,19 @@
         <div class="title-row">成績管理</div>
         <div class="form-body">
 
-          <%-- 検索フォーム --%>
+          <!-- 検索フォーム -->
           <form method="post" action="create">
             <input type="hidden" name="cmd" value="search"/>
             <div class="row gx-3 gy-2 align-items-end mb-3">
+
+              <!-- 入学年度 -->
               <div class="col-sm-2">
                 <label class="form-label">入学年度</label>
                 <select name="f1" class="form-select">
+                  <option value=""
+                    <c:if test="${param.f1 == null || param.f1 == ''}">selected</c:if>>
+                    ----
+                  </option>
                   <c:forEach var="year" items="${ent_years}">
                     <option value="${year}"
                       <c:if test="${year eq param.f1}">selected</c:if>>
@@ -79,9 +85,15 @@
                   </c:forEach>
                 </select>
               </div>
+
+              <!-- クラス -->
               <div class="col-sm-2">
                 <label class="form-label">クラス</label>
                 <select name="f2" class="form-select">
+                  <option value=""
+                    <c:if test="${param.f2 == null || param.f2 == ''}">selected</c:if>>
+                    ----
+                  </option>
                   <c:forEach var="c" items="${class_nums}">
                     <option value="${c}"
                       <c:if test="${c eq param.f2}">selected</c:if>>
@@ -90,9 +102,15 @@
                   </c:forEach>
                 </select>
               </div>
+
+              <!-- 科目 -->
               <div class="col-sm-3">
                 <label class="form-label">科目</label>
                 <select name="f3" class="form-select">
+                  <option value=""
+                    <c:if test="${param.f3 == null || param.f3 == ''}">selected</c:if>>
+                    ----
+                  </option>
                   <c:forEach var="s" items="${subjects}">
                     <option value="${s.cd}"
                       <c:if test="${s.cd eq param.f3}">selected</c:if>>
@@ -101,20 +119,27 @@
                   </c:forEach>
                 </select>
               </div>
+
+              <!-- 回数 -->
               <div class="col-sm-2">
                 <label class="form-label">回数</label>
                 <select name="f4" class="form-select">
+                  <option value=""
+                    <c:if test="${param.f4 == null || param.f4 == ''}">selected</c:if>>
+                    ----
+                  </option>
                   <option value="1" <c:if test="${param.f4=='1'}">selected</c:if>>1</option>
                   <option value="2" <c:if test="${param.f4=='2'}">selected</c:if>>2</option>
                 </select>
               </div>
+
               <div class="col-sm-auto">
                 <button type="submit" class="btn btn-secondary">検索</button>
               </div>
             </div>
           </form>
 
-          <%-- 検索結果フォーム表示 --%>
+          <!-- 検索結果フォーム表示 -->
           <c:if test="${not empty results}">
             <hr/>
             <p class="results-info">
@@ -133,8 +158,11 @@
               <table class="table table-sm table-bordered">
                 <thead>
                   <tr>
-                    <th>入学年度</th><th>クラス</th>
-                    <th>学生番号</th><th>氏名</th><th>点数</th>
+                    <th>入学年度</th>
+                    <th>クラス</th>
+                    <th>学生番号</th>
+                    <th>氏名</th>
+                    <th>点数</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,10 +177,11 @@
                                name="point_${r.student.no}"
                                value="${r.point}"
                                class="form-control" min="0" max="100"/>
+                        <%-- 隠しフィールドは同じ<td>内に移動 --%>
+                        <input type="hidden"
+                               name="class_num_${r.student.no}"
+                               value="${r.classNum}"/>
                       </td>
-                      <input type="hidden"
-                             name="class_num_${r.student.no}"
-                             value="${r.classNum}"/>
                     </tr>
                   </c:forEach>
                 </tbody>
@@ -166,7 +195,7 @@
             </form>
           </c:if>
 
-          <%-- 該当学生なし --%>
+          <!-- 該当学生なし -->
           <c:if test="${empty results and not empty param.f1}">
             <hr/>
             <div class="alert alert-warning">

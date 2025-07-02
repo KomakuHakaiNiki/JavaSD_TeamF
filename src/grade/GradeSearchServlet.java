@@ -25,62 +25,42 @@ public class GradeSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 初期表示：プルダウン用データをセットして grade_list.jsp を表示
+     * 初期表示：プルダウン用データをセットして JSP 表示
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        HttpSession session = req.getSession();
-        Teacher user = (Teacher) session.getAttribute("user");
-        // 開発中はログイン不要にするバイパス
-        if (user == null || user.getSchool() == null) {
-            Teacher dummy = new Teacher();
-            School school = new School();
-            school.setCd("tes");  // テスト用H2の学校コード
-            dummy.setSchool(school);
-            session.setAttribute("user", dummy);
-            user = dummy;
-        }
-
-        try {
-            String schoolCd = user.getSchool().getCd();
-            List<Integer> entYears  = new StudentDAO().getEntYears(schoolCd);
-            List<String>  classNums = new StudentDAO().getClassNums(schoolCd);
-            List<Subject> subjects  = new SubjectDAO().filterBySchool(schoolCd);
-
-            req.setAttribute("ent_years",  entYears);
-            req.setAttribute("class_nums", classNums);
-            req.setAttribute("subjects",   subjects);
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("error", "表示に必要な情報の取得に失敗しました。");
-        }
-        req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
+        // プルダウンだけセット（検索結果属性はクリアしない）
+        populateDropdown(req);
+        req.getRequestDispatcher("/grade/grade_list.jsp")
+           .forward(req, resp);
     }
 
     /**
-     * POST の振り分け
+     * POST の振り分け（検索）
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
         req.setCharacterEncoding("UTF-8");
+        // まずプルダウンを再セット
+        populateDropdown(req);
+
         String type = req.getParameter("search_type");
         if ("subject".equals(type)) {
             searchBySubject(req, resp);
-        } else if ("student".equals(type)) {
+        }
+        else if ("student".equals(type)) {
             searchByStudent(req, resp);
-        } else {
+        }
+        else {
+            // 想定外は初期表示に戻す
             doGet(req, resp);
         }
     }
 
     /**
      * ■ 科目情報での検索
-     * f1/f2/f3 のいずれかが空 → エラー
-     * DAO実行後、ヒットなしなら info をセット
      */
     private void searchBySubject(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -90,91 +70,122 @@ public class GradeSearchServlet extends HttpServlet {
         String f3 = req.getParameter("f3");  // 科目コード
 
         // 未選択チェック
-        if (f1 == null || f1.trim().isEmpty()
-         || f2 == null || f2.trim().isEmpty()
-         || f3 == null || f3.trim().isEmpty()) {
-            req.setAttribute("error", "入学年度とクラスと科目を入力してください。");
-            doGet(req, resp);
+        if (isEmpty(f1) || isEmpty(f2) || isEmpty(f3)) {
+            req.setAttribute("errorSubject", "入学年度とクラスと科目を入力してください。");
+            // JSPへフォワード（この時点で resultsSubject は null）
+            req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
             return;
         }
-
-        // parse & DAO
-        HttpSession session = req.getSession();
-        Teacher user = (Teacher) session.getAttribute("user");
-        String schoolCd = user.getSchool().getCd();
 
         int entYear;
         try {
             entYear = Integer.parseInt(f1.trim());
         } catch (NumberFormatException e) {
-            req.setAttribute("error", "入学年度の形式が不正です。");
-            doGet(req, resp);
+            req.setAttribute("errorSubject", "入学年度の形式が不正です。");
+            req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
             return;
         }
+
         String classNum  = f2.trim();
         String subjectCd = f3.trim();
+        String schoolCd  = getSchoolCd(req);
 
         try {
             List<TestListSubject> results = new TestListStudentDAO()
                 .filterBySubject(entYear, classNum, subjectCd, schoolCd);
-            req.setAttribute("results_subject", results);
 
-            // ヒットなし時のメッセージ
+            req.setAttribute("resultsSubject", results);
             if (results.isEmpty()) {
-                req.setAttribute("info", "成績情報が存在しませんでした。");
+                req.setAttribute("infoSubject", "成績情報が存在しませんでした。");
             }
 
-            // 科目名の取得
-            String name = subjectCd;
+            // 科目名取得
+            String subjectName = subjectCd;
             for (Subject s : new SubjectDAO().filterBySchool(schoolCd)) {
                 if (subjectCd.equals(s.getCd())) {
-                    name = s.getName();
+                    subjectName = s.getName();
                     break;
                 }
             }
-            req.setAttribute("searched_subject_name", name);
+            req.setAttribute("searchedSubjectName", subjectName);
 
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "成績の検索中にエラーが発生しました。");
+            req.setAttribute("errorSubject", "成績の検索中にエラーが発生しました。");
         }
 
-        // プルダウンを再セットして結果表示
-        doGet(req, resp);
+        // JSP表示
+        req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
     }
 
     /**
      * ■ 学生番号での検索
-     * f4 が空 → エラー
-     * DAO実行後、ヒットなしなら info をセット
      */
     private void searchByStudent(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String f4 = req.getParameter("f4"); // 学生番号
+        String f4 = req.getParameter("f4");  // 学生番号
 
-        if (f4 == null || f4.trim().isEmpty()) {
-            req.setAttribute("error", "学生番号を入力してください。");
-            doGet(req, resp);
+        if (isEmpty(f4)) {
+            req.setAttribute("errorStudent", "学生番号を入力してください。");
+            req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
             return;
         }
 
         try {
+            // 学生情報＆成績リストを取得
             Student student = new StudentDAO().getStudentById(f4.trim());
             List<TestListStudent> results = new TestListStudentDAO()
                 .filterByStudent(f4.trim());
 
             req.setAttribute("student", student);
-            req.setAttribute("results_student", results);
-
+            req.setAttribute("resultsStudent", results);
             if (results.isEmpty()) {
-                req.setAttribute("info", "成績情報が存在しませんでした。");
+                req.setAttribute("infoStudent", "成績情報が存在しませんでした。");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "成績の検索中にエラーが発生しました。");
+            req.setAttribute("errorStudent", "成績の検索中にエラーが発生しました。");
         }
 
-        doGet(req, resp);
+        // JSP表示
+        req.getRequestDispatcher("/grade/grade_list.jsp").forward(req, resp);
+    }
+
+    /**
+     * ドロップダウン用の共通データをセット
+     */
+    private void populateDropdown(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        Teacher user = (Teacher) session.getAttribute("user");
+        // (開発中バイパス)
+        if (user == null || user.getSchool() == null) {
+            Teacher dummy = new Teacher();
+            School school = new School();
+            school.setCd("tes");
+            dummy.setSchool(school);
+            session.setAttribute("user", dummy);
+            user = dummy;
+        }
+        try {
+            String schoolCd = user.getSchool().getCd();
+            req.setAttribute("ent_years",  new StudentDAO().getEntYears(schoolCd));
+            req.setAttribute("class_nums", new StudentDAO().getClassNums(schoolCd));
+            req.setAttribute("subjects",   new SubjectDAO().filterBySchool(schoolCd));
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("errorCommon", "表示に必要な情報の取得に失敗しました。");
+        }
+    }
+
+    /** セッションから学校コードを取得 */
+    private String getSchoolCd(HttpServletRequest req) {
+        Teacher user = (Teacher) req.getSession().getAttribute("user");
+        return user.getSchool().getCd();
+    }
+
+    /** null or 空文字の判定 */
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
     }
 }
