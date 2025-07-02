@@ -1,4 +1,3 @@
-// FILE: JavaSD/src/servlet/student/StudentCreateServlet.java
 package student;
 
 import java.io.IOException;
@@ -39,10 +38,10 @@ public class StudentCreateServlet extends HttpServlet {
             req.setAttribute("classNumList", classNums);
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "クラス情報の取得中にエラーが発生しました。");
+            req.setAttribute("error", "プルダウン用データの取得に失敗しました。");
         }
 
-        // 入力フォーム表示
+        // フォーム表示
         req.getRequestDispatcher("/student/student_create.jsp")
            .forward(req, resp);
     }
@@ -69,7 +68,7 @@ public class StudentCreateServlet extends HttpServlet {
 
         StudentDAO dao = new StudentDAO();
 
-        // ■ 基本バリデーション
+        // ■ 必須チェック
         if (no == null || no.trim().isEmpty() ||
             name == null || name.trim().isEmpty()) {
             req.setAttribute("error", "学籍番号と氏名は必須入力です。");
@@ -77,49 +76,26 @@ public class StudentCreateServlet extends HttpServlet {
             return;
         }
         if (entYearStr == null || entYearStr.trim().isEmpty()) {
-            req.setAttribute("error", "入学年度を入力してください。");
+            req.setAttribute("error", "入学年度を選択してください。");
+            doGet(req, resp);
+            return;
+        }
+        if (classNum == null || classNum.trim().isEmpty()) {
+            req.setAttribute("error", "クラスを選択してください。");
             doGet(req, resp);
             return;
         }
 
         int entYear;
         try {
-            entYear = Integer.parseInt(entYearStr.trim());
+            entYear = Integer.parseInt(entYearStr);
         } catch (NumberFormatException e) {
-            req.setAttribute("error", "入学年度は半角数字で入力してください。");
+            req.setAttribute("error", "入学年度の形式が不正です。");
             doGet(req, resp);
             return;
         }
 
-        // ■ 重複チェック：入学年度
-        try {
-            List<Integer> existingYears = dao.getEntYears(schoolCd);
-            if (existingYears.contains(entYear)) {
-                req.setAttribute("error", "この数値はすでに存在しています");
-                doGet(req, resp);
-                return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("error", "入学年度のチェック中にエラーが発生しました。");
-            doGet(req, resp);
-            return;
-        }
-
-        // ■ 重複チェック：クラス
-        try {
-            List<String> existingClasses = dao.getClassNums(schoolCd);
-            if (existingClasses.contains(classNum)) {
-                req.setAttribute("error", "この数値はすでに存在しています");
-                doGet(req, resp);
-                return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("error", "クラスのチェック中にエラーが発生しました。");
-            doGet(req, resp);
-            return;
-        }
+        // ※プルダウンに載っている年度・クラスは既存チェック不要なので削除しました
 
         // ■ 登録処理
         Student student = new Student();
@@ -132,23 +108,24 @@ public class StudentCreateServlet extends HttpServlet {
 
         try {
             dao.insertStudent(student);
-            // 成功時は完了画面にフォワード
+            // 完了画面へ
             req.getRequestDispatcher("/student/student_create_done.jsp")
                .forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
-            String msg = (e.getMessage() != null && e.getMessage().toLowerCase().contains("primary key"))
+            // PK 重複だけを特別扱い
+            String msg = (e.getMessage() != null &&
+                          e.getMessage().toLowerCase().contains("primary key"))
                 ? "エラー: 学籍番号「" + no + "」は既に使用されています。"
                 : "データベースエラー: 学生の登録に失敗しました。";
             req.setAttribute("error", msg);
 
-            // 再度プルダウン用リストをセット
+            // 再度プルダウンをセットしてフォームに戻す
             try {
                 req.setAttribute("entYearList",  dao.getEntYears(schoolCd));
                 req.setAttribute("classNumList", dao.getClassNums(schoolCd));
             } catch (Exception ignore) {}
 
-            // 入力フォームに戻す
             req.getRequestDispatcher("/student/student_create.jsp")
                .forward(req, resp);
         }

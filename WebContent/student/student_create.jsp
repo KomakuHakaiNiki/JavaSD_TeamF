@@ -6,19 +6,14 @@
 <head>
   <meta charset="UTF-8">
   <title>学生登録 | 得点管理システム</title>
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet">
   <style>
-    /* sidebar + main を並べる */
     .layout-container { display: flex; }
-    /* メイン部分 */
-    .main-content {
-      padding: 30px;
-      flex-grow: 1;
-      box-sizing: border-box;
-      background-color: #f9f9f9;
-    }
+    /* メイン部。flex-grow-1 で横に伸びます */
+    .main-content { padding: 30px; }
+    /* フォームカードを中央ナローに */
     .form-area {
       max-width: 700px;
       margin: 0 auto;
@@ -33,45 +28,38 @@
     }
     .form-body {
       background: #fff;
+      border: 1px solid #dee2e6;
       border-radius: 0 0 12px 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      border: 1px solid #dee2e6;
       padding: 30px 40px;
     }
   </style>
 </head>
 <body>
 
-  <%-- ① ヘッダー --%>
   <%@ include file="/header.jsp" %>
 
-  <%-- ② サイド＋メイン用コンテナを開く --%>
   <div class="layout-container">
-
-    <%-- ③ サイドメニュー --%>
     <%@ include file="/menu.jsp" %>
 
-    <%-- ④ メインコンテンツ --%>
-    <main class="main-content">
-
+    <!-- ここに flex-grow-1 クラスを付ける -->
+    <main class="main-content flex-grow-1">
       <div class="form-area">
         <div class="main-title-row">学生情報登録</div>
         <div class="form-body">
 
-          <%-- エラー表示 --%>
           <c:if test="${not empty error}">
-            <div class="alert alert-danger" role="alert">
-              <c:out value="${error}" />
-            </div>
+            <div class="alert alert-danger">${error}</div>
           </c:if>
 
-          <form method="post" action="${pageContext.request.contextPath}/student/create">
+          <form method="post"
+                action="${pageContext.request.contextPath}/student/create">
 
-            <!-- 入学年度（プルダウン） -->
+            <!-- 入学年度 -->
             <div class="mb-3">
-              <label for="entYear" class="form-label">入学年度</label>
+              <label class="form-label" for="entYear">入学年度</label>
               <select id="entYear" name="entYear" class="form-select" required>
-                <option value="">— 選択してください —</option>
+                <option value="">-- 選択してください --</option>
                 <c:forEach var="y" items="${entYearList}">
                   <option value="${y}"
                     <c:if test="${param.entYear == y.toString()}">selected</c:if>>
@@ -83,31 +71,30 @@
 
             <!-- 学生番号 -->
             <div class="mb-3">
-              <label for="no" class="form-label">学生番号</label>
+              <label class="form-label" for="no">学生番号</label>
               <input type="text"
-                     id="no"
-                     name="no"
+                     id="no" name="no"
                      class="form-control"
+                     maxlength="10"
                      value="${fn:escapeXml(param.no)}"
-                     required maxlength="10">
+                     required>
             </div>
 
             <!-- 氏名 -->
             <div class="mb-3">
-              <label for="name" class="form-label">氏名</label>
+              <label class="form-label" for="name">氏名</label>
               <input type="text"
-                     id="name"
-                     name="name"
+                     id="name" name="name"
                      class="form-control"
                      value="${fn:escapeXml(param.name)}"
                      required>
             </div>
 
-            <!-- クラス（プルダウン） -->
+            <!-- クラス -->
             <div class="mb-3">
-              <label for="classNum" class="form-label">クラス</label>
+              <label class="form-label" for="classNum">クラス</label>
               <select id="classNum" name="classNum" class="form-select" required>
-                <option value="">— 選択してください —</option>
+                <option value="">-- 選択してください --</option>
                 <c:forEach var="c" items="${classNumList}">
                   <option value="${c}"
                     <c:if test="${param.classNum == c}">selected</c:if>>
@@ -117,30 +104,26 @@
               </select>
             </div>
 
-            <!-- 在学中チェック -->
+            <!-- 在学中 -->
             <div class="form-check mb-4">
               <input type="checkbox"
-                     id="isAttend"
-                     name="isAttend"
+                     id="isAttend" name="isAttend"
                      class="form-check-input"
-                     <c:if test="${param.isAttend != null}">checked</c:if>>
-              <label for="isAttend" class="form-check-label">在学中</label>
+                     <c:if test="${param.isAttend != null}">checked</c:if> />
+              <label class="form-check-label" for="isAttend">在学中</label>
             </div>
 
             <!-- ボタン -->
             <button type="submit" class="btn btn-primary">登録</button>
             <a href="${pageContext.request.contextPath}/student/list"
-               class="btn btn-link text-secondary">戻る</a>
-          </form>
+               class="btn btn-link">戻る</a>
 
+          </form>
         </div>
       </div>
-
     </main>
-  </div> <%-- layout-container を閉じる --%>
+  </div>
 
-  <%-- ⑤ フッター --%>
   <%@ include file="/footer.jsp" %>
-
 </body>
 </html>
