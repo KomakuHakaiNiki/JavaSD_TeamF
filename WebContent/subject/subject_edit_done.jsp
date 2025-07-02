@@ -1,4 +1,3 @@
-<%-- FILE: WebContent/subject/subject_update_done.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -6,11 +5,10 @@
 <head>
   <meta charset="UTF-8">
   <title>科目変更完了 | 得点管理システム</title>
-
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    .main-layout { flex: 1; display: flex; min-height: 0; }
     .main-content {
       padding: 30px;
       box-sizing: border-box;
@@ -43,23 +41,20 @@
   </style>
 </head>
 <body>
-
-  <%-- ここから共通ヘッダー --%>
+  <%-- 共通ヘッダー --%>
   <%@ include file="/header.jsp" %>
-  <%-- ここまで共通ヘッダー --%>
-
-  <main class="main-content">
-    <h2>科目情報変更</h2>
-    <div class="done-message">
-      変更が完了しました
-    </div>
-
-    <a href="list" class="action-link">科目一覧へ戻る</a>
-  </main>
-
-  <%-- ここから共通フッター --%>
+  <div class="main-layout">
+    <%-- サイドバー --%>
+    <%@ include file="/menu.jsp" %>
+    <main class="main-content">
+      <h2>科目情報変更</h2>
+      <div class="done-message">
+        変更が完了しました
+      </div>
+      <a href="list" class="action-link">科目一覧へ戻る</a>
+    </main>
+  </div>
+  <%-- 共通フッター --%>
   <%@ include file="/footer.jsp" %>
-  <%-- ここまで共通フッター --%>
-
 </body>
 </html>
